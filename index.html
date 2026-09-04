@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AxoRonin — Honor the Code. Embrace the Chaos.</title>
+<meta name="description" content="AxoRonin is a community-driven NFT collection inspired by Japanese culture, cyberpunk aesthetics and the unique charm of axolotls. Enter the Ronin Clan.">
+<link rel="canonical" href="[CANONICAL URL]/">
+<meta property="og:title" content="AxoRonin — Honor the Code. Embrace the Chaos.">
+<meta property="og:description" content="A community-driven NFT collection where Japanese culture, cyberpunk aesthetics, and the chaotic charm of axolotls collide.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="[CANONICAL URL]/">
+<meta property="og:image" content="[OG IMAGE PLACEHOLDER]">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@AxoRoninNFT">
+<meta name="twitter:title" content="AxoRonin — Honor the Code. Embrace the Chaos.">
+<meta name="twitter:description" content="A community-driven NFT collection where Japanese culture, cyberpunk aesthetics, and the chaotic charm of axolotls collide.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%239b5cff'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%2308060c' font-family='serif'%3E凛%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="loader" id="loader">
+  <div class="mark">凛</div>
+  <div class="bar"><span></span></div>
+  <p>Entering the Neon City...</p>
+</div>
+
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="brand" aria-label="AxoRonin home">
+      <span class="mark">凛</span>
+      <span>AXORONIN</span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="Primary">
+      <a href="#home" data-hash="home">Home</a>
+      <a href="#lore" data-hash="lore">Lore</a>
+      <a href="#collection" data-hash="collection">Collection</a>
+      <a href="#roadmap" data-hash="roadmap">Roadmap</a>
+      <a href="#clan" data-hash="clan">Clan</a>
+      <a href="#home:home-faq" data-hash="home:home-faq">FAQ</a>
+      <a href="#whitepaper" data-hash="whitepaper">Whitepaper</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">🌙</button>
+      <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">Join Discord</a>
+      <a href="https://linktr.ee/AxoRonin" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Mint</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+  <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">✕</button>
+  <nav class="mobile-links" id="mobileLinks" aria-label="Mobile primary">
+    <a href="#home" data-hash="home">Home</a>
+    <a href="#lore" data-hash="lore">Lore</a>
+    <a href="#collection" data-hash="collection">Collection</a>
+    <a href="#roadmap" data-hash="roadmap">Roadmap</a>
+    <a href="#clan" data-hash="clan">Clan</a>
+    <a href="#home:home-faq" data-hash="home:home-faq">FAQ</a>
+    <a href="#whitepaper" data-hash="whitepaper">Whitepaper</a>
+  </nav>
+  <div class="mobile-foot">
+    <button class="mobile-theme-row" id="mobileThemeToggle">
+      <span>Light / Dark Mode</span><span id="mobileThemeIcon">🌙</span>
+    </button>
+    <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-ghost btn-block">Join Discord</a>
+    <a href="https://linktr.ee/AxoRonin" target="_blank" rel="noopener" class="btn btn-primary btn-block">Mint</a>
+  </div>
+</div>
+
+<main>
+
+<section class="route-panel active" data-route="home" id="route-home">
+<!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-scene"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-skyline" aria-hidden="true"></div>
+    <canvas id="sakura-canvas" aria-hidden="true"></canvas>
+    <div class="hero-fog" aria-hidden="true"></div>
+
+    <div class="hero-art-frame">
+      <div class="hero-placeholder">[HERO ARTWORK PLACEHOLDER]<br><br>AxoRonin standing in neon rain, katana at rest, Neo‑Tokyo skyline behind</div>
+    </div>
+
+    <div class="hero-content">
+      <div class="inner">
+        <span class="hero-tag"><span class="dot"></span>The Ronin Clan is awakening</span>
+        <h1>HONOR THE CODE.<span class="line2">EMBRACE THE CHAOS.</span></h1>
+        <p class="lead">A community-driven NFT collection where Japanese culture, cyberpunk aesthetics, and the chaotic charm of axolotls collide.</p>
+        <div class="hero-actions">
+          <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Enter the Ronin Clan</a>
+          <a href="#collection" class="btn btn-ghost">Explore the Collection</a>
+        </div>
+        <div class="hero-meta">
+          <span>Community Driven</span><span>Built for Collectors</span><span>Quality Over Hype</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-cue"><span>Scroll</span><span class="bar"></span></div>
+  </section>
+
+  <!-- ============ INTRODUCTION ============ -->
+  <section id="home-lore-intro">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Origin</span>
+        <h2>THE RONIN HAVE AWAKENED</h2>
+        <p>In the neon shadows of a city where ancient honor meets digital chaos, a new clan rises.</p>
+        <p>AxoRonin is a community-driven NFT collection inspired by Japanese culture, cyberpunk aesthetics, and the unique charm of axolotls.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="feature-card panel reveal">
+          <div class="icon">🎴</div>
+          <div class="num">01</div>
+          <h3>Authentic Creativity</h3>
+          <p>Original characters, traits, visual identity and storytelling — built for the AxoRonin universe and nothing else.</p>
+        </div>
+        <div class="feature-card panel reveal reveal-delay-1">
+          <div class="icon">⚔️</div>
+          <div class="num">02</div>
+          <h3>The Ronin Spirit</h3>
+          <p>A universe inspired by ronin legends, Japanese symbolism and the futuristic cities they now wander.</p>
+        </div>
+        <div class="feature-card panel reveal reveal-delay-2">
+          <div class="icon">🌸</div>
+          <div class="num">03</div>
+          <h3>Community Power</h3>
+          <p>The Ronin Clan helps shape the future of the AxoRonin universe — its lore, its drops, its direction.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section id="home-about">
+    <div class="container">
+      <div class="split">
+        <div class="split-text reveal">
+          <span class="eyebrow">About AxoRonin</span>
+          <h2 style="margin-top:.6rem; font-size:clamp(1.9rem,3.6vw,2.6rem);">MORE THAN A COLLECTIBLE</h2>
+          <p class="muted" style="margin-top:1.2rem; font-size:1.05rem;">We believe NFTs are more than digital collectibles — they're a way to express identity, creativity, and community.</p>
+          <p class="muted" style="margin-top:1rem;">AxoRonin is built for collectors who appreciate art, culture, and long-term growth over short-term hype.</p>
+          <div class="hero-actions" style="margin-top:2rem;">
+            <a href="#lore" class="btn btn-ghost btn-sm">Read the Lore</a>
+          </div>
+        </div>
+        <div class="split-art reveal reveal-delay-1">
+          <div class="hero-placeholder">[HERO ARTWORK PLACEHOLDER]<br><br>Cinematic AxoRonin close‑up portrait</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ COLLECTION SHOWCASE ============ -->
+  <section id="home-collection">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Collection</span>
+        <h2>MEET THE RONIN</h2>
+        <p>Every Ronin has a story. Every trait has a purpose.</p>
+      </div>
+
+      <div class="nft-grid reveal" id="home-nft-grid"></div>
+
+      <div class="center mt-lg reveal">
+        <a href="#collection" class="btn btn-primary">View Full Collection</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRAITS / RARITY ============ -->
+  <section id="home-traits">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Forged Differently</span>
+        <h2>FORGED DIFFERENTLY</h2>
+        <p>No two Ronin are exactly alike.</p>
+      </div>
+
+      <div data-trait-tabs>
+        <div class="trait-tabs reveal">
+          <button class="trait-tab active" data-tab="background">Background</button>
+          <button class="trait-tab" data-tab="armor">Armor</button>
+          <button class="trait-tab" data-tab="eyes">Eyes</button>
+          <button class="trait-tab" data-tab="accessories">Accessories</button>
+        </div>
+
+        <div class="trait-values reveal" data-trait-panel="background" style="display:grid;">
+          <div class="trait-value panel"><div class="name">Neo Tokyo</div><div class="sub">Background</div></div>
+          <div class="trait-value panel"><div class="name">Sakura Night</div><div class="sub">Background</div></div>
+          <div class="trait-value panel"><div class="name">Cyber Alley</div><div class="sub">Background</div></div>
+          <div class="trait-value panel"><div class="name">Dojo</div><div class="sub">Background</div></div>
+          <div class="trait-value panel"><div class="name">Shadow District</div><div class="sub">Background</div></div>
+        </div>
+        <div class="trait-values reveal" data-trait-panel="armor" style="display:none;">
+          <div class="trait-value panel"><div class="name">Ronin</div><div class="sub">Armor</div></div>
+          <div class="trait-value panel"><div class="name">Samurai</div><div class="sub">Armor</div></div>
+          <div class="trait-value panel"><div class="name">Cyber</div><div class="sub">Armor</div></div>
+          <div class="trait-value panel"><div class="name">Shadow</div><div class="sub">Armor</div></div>
+          <div class="trait-value panel"><div class="name">Crimson</div><div class="sub">Armor</div></div>
+        </div>
+        <div class="trait-values reveal" data-trait-panel="eyes" style="display:none;">
+          <div class="trait-value panel"><div class="name">Neon</div><div class="sub">Eyes</div></div>
+          <div class="trait-value panel"><div class="name">Crimson</div><div class="sub">Eyes</div></div>
+          <div class="trait-value panel"><div class="name">Void</div><div class="sub">Eyes</div></div>
+          <div class="trait-value panel"><div class="name">Laser</div><div class="sub">Eyes</div></div>
+        </div>
+        <div class="trait-values reveal" data-trait-panel="accessories" style="display:none;">
+          <div class="trait-value panel"><div class="name">Katana</div><div class="sub">Accessory</div></div>
+          <div class="trait-value panel"><div class="name">Mask</div><div class="sub">Accessory</div></div>
+          <div class="trait-value panel"><div class="name">Cyber Gear</div><div class="sub">Accessory</div></div>
+          <div class="trait-value panel"><div class="name">Hats</div><div class="sub">Accessory</div></div>
+          <div class="trait-value panel"><div class="name">Clan Symbols</div><div class="sub">Accessory</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP TEASER ============ -->
+  <section id="home-roadmap">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Ronin Journey</span>
+        <h2>THE RONIN JOURNEY</h2>
+        <p>A journey built one chapter at a time.</p>
+      </div>
+      <div class="grid-3">
+        <div class="feature-card panel reveal">
+          <span class="eyebrow">Phase I</span>
+          <h3 style="margin-top:.6rem;">The Awakening</h3>
+          <p>The AxoRonin emerge from the neon shadows — lore, identity and the Clan take shape.</p>
+        </div>
+        <div class="feature-card panel reveal reveal-delay-1">
+          <span class="eyebrow">Phase II</span>
+          <h3 style="margin-top:.6rem;">The Mint</h3>
+          <p>The journey begins — public mint, holder verification and first rewards.</p>
+        </div>
+        <div class="feature-card panel reveal reveal-delay-2">
+          <span class="eyebrow">Phase III–V</span>
+          <h3 style="margin-top:.6rem;">Clan, Expansion &amp; Legacy</h3>
+          <p>Community-led growth, seasonal drops, collaborations, and the long-term story.</p>
+        </div>
+      </div>
+      <div class="center mt-lg reveal">
+        <a href="#roadmap" class="btn btn-primary">View Full Roadmap</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CLAN TEASER ============ -->
+  <section id="home-clan-teaser">
+    <div class="container">
+      <div class="split reverse">
+        <div class="split-art reveal">
+          <div class="hero-placeholder">[3D AXORONIN RENDER PLACEHOLDER]<br><br>Clan gathering under neon lanterns</div>
+        </div>
+        <div class="split-text reveal reveal-delay-1">
+          <span class="eyebrow">Community</span>
+          <h2 style="margin-top:.6rem; font-size:clamp(1.9rem,3.6vw,2.6rem);">JOIN THE RONIN CLAN</h2>
+          <p class="muted" style="margin-top:1.2rem; font-size:1.05rem;">The Ronin Clan is the heart of AxoRonin — where lore, art, and community decisions come together.</p>
+          <div class="hero-actions" style="margin-top:2rem;">
+            <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Join the Ronin Clan</a>
+            <a href="#clan" class="btn btn-ghost">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CORE PRINCIPLES ============ -->
+  <section id="home-principles">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">What We Believe</span>
+        <h2>THE RONIN CODE</h2>
+      </div>
+      <div class="grid-3">
+        <div class="feature-card panel reveal"><div class="num">I</div><h3>Community First</h3><p>The community is at the heart of the project.</p></div>
+        <div class="feature-card panel reveal reveal-delay-1"><div class="num">II</div><h3>Authentic Creativity</h3><p>Original art, storytelling and creative expression.</p></div>
+        <div class="feature-card panel reveal reveal-delay-2"><div class="num">III</div><h3>Transparency</h3><p>Clear communication and realistic expectations.</p></div>
+        <div class="feature-card panel reveal"><div class="num">IV</div><h3>Quality Over Quantity</h3><p>Focus on quality rather than unnecessary expansion.</p></div>
+        <div class="feature-card panel reveal reveal-delay-1"><div class="num">V</div><h3>Built for Collectors</h3><p>Created for people who genuinely appreciate the art and universe.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRANSPARENCY ============ -->
+  <section id="home-transparency">
+    <div class="container">
+      <div class="split">
+        <div class="split-text reveal">
+          <span class="eyebrow">Transparency</span>
+          <h2 style="margin-top:.6rem; font-size:clamp(1.9rem,3.6vw,2.6rem);">NO EMPTY PROMISES.</h2>
+          <p class="muted" style="margin-top:1.2rem; font-size:1.05rem;">We are not here to promise impossible outcomes or manufacture artificial hype.</p>
+          <p class="muted" style="margin-top:1rem;">AxoRonin is focused on building a recognizable universe through creativity, transparency, collaboration and consistent development.</p>
+        </div>
+        <div class="split-art reveal reveal-delay-1">
+          <div class="panel" style="padding:2rem; display:flex; flex-direction:column; gap:1rem;">
+            <span class="muted">✓ Clear communication</span>
+            <span class="muted">✓ Sustainable development</span>
+            <span class="muted">✓ Community feedback</span>
+            <span class="muted">✓ Authentic creativity</span>
+            <span class="muted">✓ Long-term storytelling</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SOCIAL ============ -->
+  <section id="home-social">
+    <div class="container center">
+      <div class="section-head reveal" style="margin-inline:auto;">
+        <span class="eyebrow">Stay Connected</span>
+        <h2>FOLLOW THE JOURNEY</h2>
+        <p style="margin-inline:auto;">The Ronin journey is only beginning. Follow AxoRonin for announcements, lore, community events, artwork, collaborations and future updates.</p>
+      </div>
+      <div class="hero-actions reveal" style="justify-content:center;">
+        <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Join Discord</a>
+        <a href="https://x.com/axoroninnft" target="_blank" rel="noopener" class="btn btn-ghost">Follow on X</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section id="home-final-cta">
+    <div class="container">
+      <div class="final-cta reveal">
+        <div class="hero-grid"></div>
+        <span class="eyebrow" style="justify-content:center;">The City Awaits</span>
+        <h2 style="margin-top:1rem;">A RONIN'S JOURNEY NEVER TRULY ENDS.</h2>
+        <p>The city is waiting.</p>
+        <div class="hero-actions">
+          <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Join the Clan</a>
+          <a href="https://x.com/axoroninnft" target="_blank" rel="noopener" class="btn btn-ghost">Follow the Journey</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="home-faq">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Questions</span>
+        <h2>FREQUENTLY ASKED</h2>
+      </div>
+      <div id="home-faqList" class="reveal"></div>
+    </div>
+  </section>
+</section>
+
+<section class="route-panel" data-route="lore" id="route-lore">
+<section class="page-hero">
+    <div class="container">
+      <span class="eyebrow reveal">The Legend</span>
+      <h1 class="reveal reveal-delay-1">THE LEGEND OF THE RONIN</h1>
+      <p class="reveal reveal-delay-2">Every clan begins with a single night. This is where the AxoRonin story starts — the rest is still being written, together with the Ronin Clan.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="container" style="max-width:900px; width:min(900px,92%);">
+
+      <article class="lore-chapter panel reveal">
+        <span class="chap-tag">Chapter I</span>
+        <h2>THE AWAKENING</h2>
+        <div class="lore-body">The city was never silent.
+
+Beneath the neon lights, ancient traditions survived in the shadows.
+
+Then they appeared.
+
+The AxoRonin.</div>
+      </article>
+
+      <div class="divider-glyph reveal">未来の章</div>
+
+      <article class="lore-chapter panel locked reveal">
+        <span class="chap-tag">Chapter II</span>
+        <h2>THE CLAN</h2>
+        <div class="lore-body">The neon fog has not yet lifted on this chapter. Somewhere in Neo Tokyo, the first Ronin are gathering — but their story has not been told.</div>
+        <span class="lock-badge">🔒 Locked — unlocks with the Clan</span>
+      </article>
+
+      <article class="lore-chapter panel locked reveal">
+        <span class="chap-tag">Chapter III</span>
+        <h2>NEON WAR</h2>
+        <div class="lore-body">Something is stirring beyond the Shadow District. The details remain sealed until the Clan is ready.</div>
+        <span class="lock-badge">🔒 Locked — unlocks with the Clan</span>
+      </article>
+
+      <article class="lore-chapter panel locked reveal">
+        <span class="chap-tag">Chapter IV</span>
+        <h2>THE EXPANSION</h2>
+        <div class="lore-body">The universe is bigger than one night in Neo Tokyo. This chapter waits at the edge of the map.</div>
+        <span class="lock-badge">🔒 Locked — unlocks with the Clan</span>
+      </article>
+
+      <div class="center mt-lg reveal">
+        <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Join the Clan to Follow the Story</a>
+      </div>
+    </div>
+  </section>
+</section>
+
+<section class="route-panel" data-route="collection" id="route-collection">
+<section class="page-hero">
+    <div class="container">
+      <span class="eyebrow reveal">Full Collection</span>
+      <h1 class="reveal reveal-delay-1">MEET THE RONIN</h1>
+      <p class="reveal reveal-delay-2">Every Ronin has a story. Every trait has a purpose. Metadata shown here is placeholder — swap <code>js/nft-data.js</code> for real collection metadata when it's finalized.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="container">
+      <div class="toolbar reveal">
+        <input type="search" class="search-input" id="searchInput" placeholder="Search by name or #ID..." aria-label="Search collection">
+        <select class="filter-select" id="filterBackground" aria-label="Filter by background"><option value="">Background: All</option></select>
+        <select class="filter-select" id="filterArmor" aria-label="Filter by armor"><option value="">Armor: All</option></select>
+        <select class="filter-select" id="filterEyes" aria-label="Filter by eyes"><option value="">Eyes: All</option></select>
+        <select class="filter-select" id="sortSelect" aria-label="Sort collection">
+          <option value="id-asc">Sort: ID (low–high)</option>
+          <option value="id-desc">Sort: ID (high–low)</option>
+          <option value="name-asc">Sort: Name (A–Z)</option>
+        </select>
+      </div>
+      <p class="result-count reveal" id="resultCount"></p>
+      <div class="nft-grid reveal" id="fullNftGrid"></div>
+      <div class="empty-state" id="emptyState" hidden>No Ronin match those filters. Try clearing a filter.</div>
+    </div>
+  </section>
+</section>
+
+<section class="route-panel" data-route="roadmap" id="route-roadmap">
+<section class="page-hero">
+    <div class="container">
+      <span class="eyebrow reveal">Five Phases</span>
+      <h1 class="reveal reveal-delay-1">THE RONIN JOURNEY</h1>
+      <p class="reveal reveal-delay-2">A journey built one chapter at a time.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="container">
+      <div class="roadmap-track" id="roadmapTrack">
+        <div class="phase panel">
+          <span class="tag">Phase I</span>
+          <h3>The Awakening</h3>
+          <p class="quote">"The AxoRonin emerge from the neon shadows."</p>
+          <ul>
+            <li>Finalize the AxoRonin collection</li>
+            <li>Launch social platforms</li>
+            <li>Open Discord</li>
+            <li>Begin building the Ronin Clan</li>
+            <li>Reveal project lore</li>
+            <li>Reveal visual identity</li>
+            <li>Community events</li>
+            <li>Contests &amp; whitelist campaigns</li>
+          </ul>
+        </div>
+
+        <div class="phase panel">
+          <span class="tag">Phase II</span>
+          <h3>The Mint</h3>
+          <p class="quote">"The journey begins."</p>
+          <ul>
+            <li>Public mint goes live</li>
+            <li>Holder verification</li>
+            <li>Exclusive Discord access</li>
+            <li>Community celebrations</li>
+            <li>First holder rewards</li>
+            <li>Regular development updates</li>
+          </ul>
+          <a href="https://linktr.ee/AxoRonin" target="_blank" rel="noopener" class="btn btn-primary btn-sm">Mint AxoRonin</a>
+        </div>
+
+        <div class="phase panel">
+          <span class="tag">Phase III</span>
+          <h3>The Ronin Clan</h3>
+          <p class="quote">"A strong community is stronger than any roadmap."</p>
+          <ul>
+            <li>Community voting on future collection expansions</li>
+            <li>Meme contests</li>
+            <li>Fan art competitions</li>
+            <li>Artist &amp; NFT community collaborations</li>
+            <li>Seasonal digital collectibles</li>
+            <li>Community surprises</li>
+            <li>Expand the AxoRonin universe through storytelling</li>
+          </ul>
+        </div>
+
+        <div class="phase panel">
+          <span class="tag">Phase IV</span>
+          <h3>Neon Expansion</h3>
+          <p class="quote">"The city never sleeps."</p>
+          <ul>
+            <li>Holder-exclusive digital collectibles</li>
+            <li>Merchandise exploration based on community demand</li>
+            <li>Strategic Web3 partnerships</li>
+            <li>Interactive community experiences</li>
+            <li>Continued ecosystem development</li>
+          </ul>
+        </div>
+
+        <div class="phase panel">
+          <span class="tag">Phase V</span>
+          <h3>Legacy</h3>
+          <p class="quote">"A Ronin's journey never truly ends."</p>
+          <ul>
+            <li>Long-term ecosystem support</li>
+            <li>Community-driven initiatives</li>
+            <li>Future collaborations</li>
+            <li>New chapters of the AxoRonin story</li>
+            <li>Continuous improvements based on community feedback</li>
+          </ul>
+        </div>
+      </div>
+      <p class="roadmap-note reveal">Roadmap milestones represent the current direction of AxoRonin and may evolve based on development, community feedback and project conditions.</p>
+    </div>
+  </section>
+</section>
+
+<section class="route-panel" data-route="clan" id="route-clan">
+<section class="page-hero">
+    <div class="container">
+      <span class="eyebrow reveal">The Community</span>
+      <h1 class="reveal reveal-delay-1">JOIN THE RONIN CLAN</h1>
+      <p class="reveal reveal-delay-2">The Ronin Clan is the heart of AxoRonin.</p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Join the Ronin Clan</a>
+        <a href="https://x.com/axoroninnft" target="_blank" rel="noopener" class="btn btn-ghost">Follow the Journey</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section style="padding-top:1rem;">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Potential Benefits</span>
+        <h2>WHAT THE CLAN OFFERS</h2>
+        <p>Community and holder benefits are still being finalized. These are the directions we're building toward — not guarantees beyond what AxoRonin officially confirms.</p>
+      </div>
+      <div class="grid-4">
+        <div class="feature-card panel reveal">Exclusive community spaces</div>
+        <div class="feature-card panel reveal reveal-delay-1">Future events</div>
+        <div class="feature-card panel reveal reveal-delay-2">Early announcements</div>
+        <div class="feature-card panel reveal reveal-delay-3">Voting opportunities</div>
+        <div class="feature-card panel reveal">Digital rewards</div>
+        <div class="feature-card panel reveal reveal-delay-1">Community contests</div>
+        <div class="feature-card panel reveal reveal-delay-2">Special campaigns</div>
+        <div class="feature-card panel reveal reveal-delay-3">Selected physical perks</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Activities -->
+  <section>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Get Involved</span>
+        <h2>COMMUNITY ACTIVITIES</h2>
+      </div>
+      <div class="grid-3">
+        <div class="feature-card panel reveal"><div class="icon">🖌️</div><h3>Fan Art</h3><p>Create and share your interpretation of the Ronin.</p></div>
+        <div class="feature-card panel reveal reveal-delay-1"><div class="icon">😂</div><h3>Meme Contests</h3><p>Bring chaos to the Clan.</p></div>
+        <div class="feature-card panel reveal reveal-delay-2"><div class="icon">🎉</div><h3>Community Events</h3><p>Participate in special events and campaigns.</p></div>
+        <div class="feature-card panel reveal"><div class="icon">🗳️</div><h3>Community Voting</h3><p>Help shape future expansions.</p></div>
+        <div class="feature-card panel reveal reveal-delay-1"><div class="icon">🌸</div><h3>Seasonal Drops</h3><p>Discover special digital collectibles.</p></div>
+        <div class="feature-card panel reveal reveal-delay-2"><div class="icon">🤝</div><h3>Collaborations</h3><p>Connect with artists and Web3 communities.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">By the Numbers</span>
+        <h2>THE CLAN, IN NUMBERS</h2>
+        <p>Figures below are placeholders until official numbers are confirmed.</p>
+      </div>
+      <div class="stat-grid reveal">
+        <div class="stat-card panel"><div class="val">[SUPPLY]</div><div class="lbl">Ronin</div></div>
+        <div class="stat-card panel"><div class="val">[CLAN MEMBERS]</div><div class="lbl">Clan Members</div></div>
+        <div class="stat-card panel"><div class="val">[COLLABORATIONS]</div><div class="lbl">Collaborations</div></div>
+        <div class="stat-card panel"><div class="val">[EVENTS]</div><div class="lbl">Community Events</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Physical collectibles -->
+  <section>
+    <div class="container">
+      <div class="split reverse">
+        <div class="split-art reveal">
+          <div class="hero-placeholder">[3D AXORONIN RENDER PLACEHOLDER]</div>
+        </div>
+        <div class="split-text reveal reveal-delay-1">
+          <span class="eyebrow">Coming With Future Campaigns</span>
+          <h2 style="margin-top:.6rem; font-size:clamp(1.9rem,3.6vw,2.6rem);">FROM DIGITAL TO PHYSICAL</h2>
+          <p class="muted" style="margin-top:1.2rem; font-size:1.05rem;">Some Ronin journeys may leave the screen.</p>
+          <p class="muted" style="margin-top:1rem;">Selected campaigns and milestones may feature limited physical AxoRonin collectibles, including 3D-printed pieces. This is not a guarantee that every holder automatically receives physical merchandise.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="final-cta reveal">
+        <div class="hero-grid"></div>
+        <span class="eyebrow" style="justify-content:center;">Come As You Are</span>
+        <h2 style="margin-top:1rem;">THE CLAN IS WAITING.</h2>
+        <p>Bring your creativity. Bring your chaos.</p>
+        <div class="hero-actions">
+          <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener" class="btn btn-primary">Join the Ronin Clan</a>
+          <a href="https://x.com/axoroninnft" target="_blank" rel="noopener" class="btn btn-ghost">Follow on X</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<section class="route-panel" data-route="whitepaper" id="route-whitepaper">
+<section class="page-hero">
+    <div class="container">
+      <span class="eyebrow reveal">Official Document</span>
+      <h1 class="reveal reveal-delay-1">AXORONIN WHITEPAPER</h1>
+      <p class="reveal reveal-delay-2">Everything AxoRonin stands for, in one place.</p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="#home" class="btn btn-ghost">Back to Website</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="container wp-layout">
+      <nav class="wp-nav" aria-label="Whitepaper sections">
+        <a href="#whitepaper:wp-vision">Vision</a>
+        <a href="#whitepaper:wp-collection">The Collection</a>
+        <a href="#whitepaper:wp-community">Community</a>
+        <a href="#whitepaper:wp-mission">Mission</a>
+        <a href="#whitepaper:wp-roadmap">Roadmap</a>
+        <a href="#whitepaper:wp-principles">Core Principles</a>
+      </nav>
+
+      <div>
+        <article class="wp-section reveal" id="wp-vision">
+          <span class="eyebrow">01</span>
+          <h2>Vision</h2>
+          <p>AxoRonin exists to build a recognizable universe at the intersection of Japanese culture, cyberpunk aesthetics, and the unexpected charm of axolotls. We see NFTs as more than digital collectibles — they are a way to express identity, creativity, and belonging to something built collectively.</p>
+          <p>Our vision is long-term: a world that grows through art, lore, and an active community rather than short-term hype cycles.</p>
+        </article>
+
+        <article class="wp-section reveal" id="wp-collection">
+          <span class="eyebrow">02</span>
+          <h2>The Collection</h2>
+          <p>AxoRonin is a generative NFT collection combining original character art, Japanese-inspired symbolism, and cyberpunk environments. Traits span backgrounds, armor, eyes, and accessories, giving every Ronin its own identity within the wider universe.</p>
+          <ul class="wp-list">
+            <li>Collection supply: [COLLECTION SUPPLY]</li>
+            <li>Blockchain: [BLOCKCHAIN]</li>
+            <li>Mint price: [MINT PRICE]</li>
+            <li>Contract address: [CONTRACT ADDRESS]</li>
+          </ul>
+        </article>
+
+        <article class="wp-section reveal" id="wp-community">
+          <span class="eyebrow">03</span>
+          <h2>Community</h2>
+          <p>The Ronin Clan is the community layer of AxoRonin — the people who follow the lore, shape decisions, create fan content, and help the universe grow. Community input is intended to influence future expansions, seasonal drops, and storytelling direction.</p>
+        </article>
+
+        <article class="wp-section reveal" id="wp-mission">
+          <span class="eyebrow">04</span>
+          <h2>Mission</h2>
+          <p>Our mission is to build AxoRonin around quality over hype, and community over numbers. We prioritize authentic creativity, transparent communication, and sustainable, long-term development over unrealistic promises or short-term financial narratives.</p>
+        </article>
+
+        <article class="wp-section reveal" id="wp-roadmap">
+          <span class="eyebrow">05</span>
+          <h2>Roadmap</h2>
+          <p>The Ronin Journey is structured across five phases: The Awakening, The Mint, The Ronin Clan, Neon Expansion, and Legacy. Full details live on the <a href="#whitepaper:wp-roadmap" style="color:var(--purple);">Roadmap page</a>. Roadmap milestones represent current direction and may evolve based on development, community feedback and project conditions.</p>
+        </article>
+
+        <article class="wp-section reveal" id="wp-principles">
+          <span class="eyebrow">06</span>
+          <h2>Core Principles</h2>
+          <ul class="wp-list">
+            <li>Community First — the community is at the heart of the project.</li>
+            <li>Authentic Creativity — original art, storytelling and creative expression.</li>
+            <li>Transparency — clear communication and realistic expectations.</li>
+            <li>Quality Over Quantity — focus on quality rather than unnecessary expansion.</li>
+            <li>Built for Collectors — created for people who genuinely appreciate the art and universe.</li>
+          </ul>
+        </article>
+
+        <div class="reveal">
+          <a href="#home" class="btn btn-ghost">← Back to Website</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<section class="route-panel" data-route="mint" id="route-mint">
+<section class="page-hero" style="padding-bottom:1rem;">
+    <div class="container">
+      <span class="eyebrow reveal">Mint</span>
+      <h1 class="reveal reveal-delay-1">MINT AXORONIN</h1>
+      <p class="reveal reveal-delay-2">Real wallet functionality will be enabled here once mint mechanics are finalized. Nothing on this page currently moves funds or connects a real wallet.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:1.5rem;">
+    <div class="container mint-layout">
+      <div class="mint-art reveal">
+        <div class="hero-placeholder">[HERO ARTWORK PLACEHOLDER]<br><br>AxoRonin Collection</div>
+      </div>
+
+      <div class="mint-panel panel reveal reveal-delay-1">
+        <h2 style="font-size:1.6rem;">AxoRonin Collection</h2>
+
+        <div class="mint-row"><span>Mint Price</span><span id="mintPrice"></span></div>
+        <div class="mint-row"><span>Supply</span><span id="mintSupply"></span></div>
+        <div class="mint-row"><span>Remaining</span><span>[REMAINING SUPPLY]</span></div>
+        <div class="mint-row"><span>Network</span><span id="mintNetwork"></span></div>
+
+        <div style="margin-top:1.6rem;">
+          <span style="font-family:var(--font-tech); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-faint);">Quantity</span>
+          <div class="qty-control" style="margin-top:.6rem;">
+            <button class="qty-btn" id="qtyMinus" disabled aria-label="Decrease quantity">–</button>
+            <span class="qty-val" id="qtyVal">1</span>
+            <button class="qty-btn" id="qtyPlus" disabled aria-label="Increase quantity">+</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" id="connectBtn" style="margin-top:1.8rem;" disabled>Mint Coming Soon</button>
+
+        <div class="status-banner"><span class="dot"></span><span>Minting is not yet live. Follow Discord and X for the official mint announcement.</span></div>
+
+        <div class="contract-box">
+          <span id="contractAddr"></span>
+          <button class="copy-btn" id="copyContract">Copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Mint FAQ</span>
+        <h2>BEFORE YOU MINT</h2>
+      </div>
+      <div id="mintFaqList" class="reveal"></div>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a href="#home" class="brand" style="margin-bottom:1rem;">
+          <span class="mark">凛</span><span>AXORONIN</span>
+        </a>
+        <p class="muted" style="max-width:34ch; font-size:.92rem;">Honor the Code. Embrace the Chaos.</p>
+      </div>
+      <div>
+        <h5>Navigate</h5>
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#lore">Lore</a>
+          <a href="#collection">Collection</a>
+          <a href="#roadmap">Roadmap</a>
+          <a href="#clan">Clan</a>
+          <a href="#home:home-faq">FAQ</a>
+          <a href="#whitepaper">Whitepaper</a>
+        </div>
+      </div>
+      <div>
+        <h5>Community</h5>
+        <div class="footer-links">
+          <a href="https://discord.gg/pBqjT6BPS" target="_blank" rel="noopener">Discord — discord.gg/pBqjT6BPS</a>
+          <a href="https://x.com/axoroninnft" target="_blank" rel="noopener">X — @AxoRoninNFT</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AxoRonin. All rights reserved.</span>
+      <span>Quality over hype. Community over numbers.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
