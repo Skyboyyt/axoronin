@@ -285,6 +285,9 @@ html[data-theme="light"] .btn-primary{ color: #fff; }
 @media (max-width: 900px){
   .nav-links{ display:none; }
   .hamburger{ display:flex; }
+  /* "Join Discord" and "Mint" already live in the mobile menu's footer —
+     showing them again here crowded the mobile navbar and caused overflow/wrap. */
+  .nav-actions .btn{ display:none; }
 }
 
 /* ---------------- HERO ---------------- */
