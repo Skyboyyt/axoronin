@@ -389,9 +389,15 @@ html[data-theme="light"] .btn-primary{ color: #fff; }
 @keyframes cue{ 0%{ opacity:0; transform: scaleY(.3); transform-origin: top;} 40%{opacity:1; transform:scaleY(1); transform-origin: top;} 100%{opacity:0; transform: scaleY(1); transform-origin: bottom;} }
 
 @media (max-width: 980px){
+  /* .hero is display:flex with no flex-direction, so it defaults to "row".
+     The artwork frame is position:absolute on desktop (removed from flex
+     flow), but the rule below makes it position:relative on mobile — which
+     puts it back INTO the flex row, fighting the text block for horizontal
+     space and collapsing the artwork placeholder to a sliver. Forcing
+     column direction here makes it stack properly instead. */
+  .hero{ flex-direction: column; min-height: auto; overflow: visible; padding-bottom: 3rem; }
   .hero-art-frame{ position:relative; width: 88%; margin: 2.4rem auto 0; top:auto; inset: auto; }
   .hero-content{ padding-bottom: 2rem; }
-  .hero{ padding-bottom: 3rem; }
 }
 
 /* ---------------- GLASS PANEL / CARDS ---------------- */
@@ -604,4 +610,127 @@ footer{ border-top:1px solid var(--border); padding: 4rem 0 2rem; margin-top: 2r
 @keyframes route-fade{ from{ opacity: 0; transform: translateY(8px); } to{ opacity: 1; transform: translateY(0); } }
 @media (prefers-reduced-motion: reduce){
   .route-panel.active{ animation: none; }
+}
+
+/* ==========================================================================
+   RESTORED PAGE-SPECIFIC STYLES
+   These lived in each sub-page's own <head> before everything was merged
+   into one HTML file — the merge only pulled <main> content, so these were
+   missing. Restoring them here, with mobile breakpoints for each.
+   ========================================================================== */
+
+/* ---------------- LORE ---------------- */
+.lore-chapter{ padding: 2.4rem; margin-bottom: 1.6rem; position:relative; overflow:hidden; }
+.lore-chapter .chap-tag{ font-family: var(--font-tech); font-size:.72rem; letter-spacing:.3em; text-transform:uppercase; color: var(--pink); }
+.lore-chapter h2{ font-size: clamp(1.6rem,3.4vw,2.2rem); margin-top:.6rem; }
+.lore-body{ margin-top: 1.4rem; font-family: var(--font-display); font-size: 1.12rem; line-height: 1.9; color: var(--text-dim); max-width: 62ch; white-space: pre-line; }
+.lore-chapter.locked{ filter: none; }
+.lore-chapter.locked .lore-body{ color: var(--text-faint); filter: blur(.4px); }
+.lock-badge{ display:inline-flex; align-items:center; gap:.5em; margin-top:1.4rem; font-family: var(--font-tech); font-size:.72rem; letter-spacing:.2em; text-transform:uppercase; color: var(--text-faint); border:1px solid var(--border-strong); padding:.5em 1em; border-radius:999px; }
+@media (max-width: 600px){
+  .lore-chapter{ padding: 1.6rem; }
+  .lore-body{ font-size: 1rem; line-height: 1.8; }
+}
+
+/* ---------------- COLLECTION: toolbar + modal ---------------- */
+.toolbar{ display:flex; flex-wrap:wrap; gap:1rem; align-items:center; margin-bottom: 2.4rem; }
+.search-input{
+  flex:1; min-width:220px; background: var(--panel); border:1px solid var(--border-strong); border-radius:999px;
+  padding: .85em 1.4em; color: var(--text); font-family: var(--font-body); font-size:.95rem;
+}
+.search-input::placeholder{ color: var(--text-faint); }
+.filter-select{
+  background: var(--panel); border:1px solid var(--border-strong); border-radius:999px;
+  padding: .8em 1.2em; color: var(--text); font-family: var(--font-tech); font-size:.8rem; letter-spacing:.06em; text-transform:uppercase;
+}
+.result-count{ font-family: var(--font-tech); font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color: var(--text-faint); margin-bottom: 1.4rem; }
+.empty-state{ text-align:center; padding: 5rem 1rem; color: var(--text-faint); font-family: var(--font-tech); letter-spacing:.1em; text-transform:uppercase; font-size:.85rem; }
+@media (max-width: 600px){
+  .toolbar{ flex-direction: column; align-items: stretch; }
+  .search-input, .filter-select{ width: 100%; }
+}
+
+.modal-overlay{ position:fixed; inset:0; z-index:700; background: rgba(4,3,8,.78); backdrop-filter: blur(10px); display:flex; align-items:center; justify-content:center; padding:1.5rem; opacity:0; visibility:hidden; transition: opacity .35s var(--ease), visibility .35s; }
+.modal-overlay.open{ opacity:1; visibility:visible; }
+.modal{ width:min(760px,100%); max-height:88vh; overflow:auto; background: var(--panel-solid); border:1px solid var(--border-strong); border-radius: var(--radius-l); padding: 2rem; display:grid; grid-template-columns: 1fr 1fr; gap: 2rem; transform: translateY(20px); transition: transform .35s var(--ease); }
+.modal-overlay.open .modal{ transform: translateY(0); }
+@media (max-width:700px){
+  .modal{ grid-template-columns:1fr; padding: 1.4rem; max-height: 92vh; }
+}
+@media (max-width: 420px){
+  .modal-overlay{ padding: .75rem; }
+}
+.modal-close{ position:absolute; top:1.4rem; right:1.6rem; width:40px; height:40px; border-radius:50%; background: var(--panel); border:1px solid var(--border-strong); cursor:pointer; font-size:1.1rem; color:var(--text); }
+.modal-media{ aspect-ratio:1/1; border-radius: var(--radius-m); background: var(--grad-panel); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; text-align:center; color: var(--text-faint); font-family: var(--font-tech); font-size:.75rem; letter-spacing:.06em; text-transform:uppercase; padding:1.5rem; }
+.modal-trait-row{ display:flex; justify-content:space-between; padding:.7rem 0; border-bottom:1px solid var(--border); font-size:.92rem; }
+.modal-trait-row span:first-child{ color: var(--text-faint); font-family: var(--font-tech); letter-spacing:.08em; text-transform:uppercase; font-size:.72rem; }
+
+/* ---------------- WHITEPAPER ---------------- */
+.wp-layout{ display:grid; grid-template-columns: 240px 1fr; gap: 3rem; align-items:start; }
+@media (max-width: 860px){ .wp-layout{ grid-template-columns: 1fr; } }
+.wp-nav{ position: sticky; top: calc(var(--nav-h) + 1.5rem); display:flex; flex-direction:column; gap:.3rem; }
+.wp-nav a{ font-family: var(--font-tech); font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; color: var(--text-faint); padding:.5em .8em; border-left: 2px solid transparent; }
+.wp-nav a:hover, .wp-nav a.active{ color: var(--text); border-left-color: var(--purple); }
+.wp-section{ margin-bottom: 3.6rem; scroll-margin-top: calc(var(--nav-h) + 1.5rem); }
+.wp-section h2{ font-size: clamp(1.6rem,3.2vw,2.1rem); }
+.wp-section .eyebrow{ margin-bottom:.6rem; }
+.wp-section p{ color: var(--text-dim); margin-top: 1rem; max-width: 68ch; }
+.wp-list{ margin-top: 1.2rem; display:flex; flex-direction:column; gap:.6rem; }
+.wp-list li{ display:flex; gap:.6em; color: var(--text-dim); font-size:.96rem; }
+.wp-list li::before{ content:"⟡"; color: var(--purple); flex:none; }
+@media (max-width: 860px){
+  /* A sticky sidebar makes little sense once it's stacked above the content
+     on mobile — turn it into a horizontal scrollable tab row instead. */
+  .wp-nav{
+    position: static; flex-direction: row; flex-wrap: wrap; gap: .5rem;
+    margin-bottom: 1.6rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+  }
+  .wp-nav a{ border-left: none; border-bottom: 2px solid transparent; padding: .4em .3em; }
+  .wp-nav a:hover, .wp-nav a.active{ border-left-color: transparent; border-bottom-color: var(--purple); }
+}
+
+/* ---------------- MINT ---------------- */
+.mint-layout{ display:grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items:start; }
+@media (max-width: 900px){ .mint-layout{ grid-template-columns:1fr; } }
+.mint-art .hero-placeholder{ aspect-ratio: 1/1; max-height:none; }
+.mint-panel{ padding: 2.2rem; }
+.mint-row{ display:flex; justify-content:space-between; align-items:center; padding: .9rem 0; border-bottom: 1px solid var(--border); font-size:.92rem; }
+.mint-row span:first-child{ color: var(--text-faint); font-family: var(--font-tech); letter-spacing:.08em; text-transform:uppercase; font-size:.72rem; }
+.qty-control{ display:flex; align-items:center; gap: 1rem; }
+.qty-btn{ width:38px; height:38px; border-radius:50%; border:1px solid var(--border-strong); background: var(--panel); color: var(--text); font-size:1.1rem; cursor:pointer; }
+.qty-btn:disabled{ opacity:.4; cursor:not-allowed; }
+.qty-val{ font-family: var(--font-tech); font-size:1.2rem; min-width: 2ch; text-align:center; }
+.status-banner{ margin-top:1.4rem; padding: .9rem 1.1rem; border-radius: var(--radius-s); border:1px solid var(--border-strong); background: var(--panel); font-size:.85rem; color: var(--text-dim); display:flex; align-items:center; gap:.7em; }
+.status-banner .dot{ width:8px; height:8px; border-radius:50%; background: var(--pink); box-shadow:0 0 8px var(--pink); flex:none; }
+.contract-box{ display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:1.4rem; padding: .8rem 1rem; border-radius: var(--radius-s); background: var(--bg-alt); border:1px solid var(--border); font-family: var(--font-tech); font-size:.78rem; word-break: break-all; }
+.copy-btn{ background:none; border:1px solid var(--border-strong); border-radius:8px; padding:.4em .8em; cursor:pointer; color:var(--text-dim); font-size:.7rem; flex:none; }
+@media (max-width: 600px){
+  .mint-panel{ padding: 1.5rem; }
+  .contract-box{ flex-direction: column; align-items: stretch; gap: .6rem; }
+  .copy-btn{ width: 100%; }
+}
+
+/* ==========================================================================
+   ADDITIONAL MOBILE-FIT FIXES
+   ========================================================================== */
+
+/* The hero tag pill ("The Ronin Clan is awakening") uses heavy letter-spacing
+   which, combined with an inline-flex width-to-content box, could overflow
+   the viewport on narrow phones instead of wrapping. */
+.hero-tag{
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+@media (max-width: 420px){
+  .hero-tag{ font-size: .66rem; letter-spacing: .18em; padding: .5em .9em; }
+  .hero h1{ letter-spacing: 0; }
+}
+
+/* Tighten outer spacing a touch on very small phones so panels/cards don't
+   feel edge-to-edge. */
+@media (max-width: 420px){
+  .container{ width: 94%; }
+  .feature-card, .stat-card{ padding: 1.6rem 1.3rem; }
+  .final-cta{ padding: 3rem 1.2rem; }
 }
