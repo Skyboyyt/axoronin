@@ -44,6 +44,19 @@ Object.freeze(AXORONIN_CONFIG);
 /* Placeholder NFT metadata — no real rarity % or imagery invented.
    Swap this array for real collection metadata when available; the
    render functions in home-data.js / collection.js only expect this shape. */
+/* Seven real character portraits are cycled across the placeholder metadata
+   below purely as visual stand-ins — swap this array for real collection
+   metadata (and per-token images) once it exists. */
+const AXORONIN_ART = [
+  "axo-bubblegum-oni",
+  "axo-frostbreath-sakura",
+  "axo-zipper-mouth",
+  "axo-bamboo-moon",
+  "axo-foxmask-sunset",
+  "axo-lightning-dragon",
+  "axo-mecha-oni-pipe",
+];
+
 const AXORONIN_NFTS = [
   { id: "0042", name: "Neon Ronin",     background: "Neo Tokyo",       armor: "Ronin",   eyes: "Neon",    accessory: "Katana" },
   { id: "0107", name: "Sakura Wanderer",background: "Sakura Night",    armor: "Samurai", eyes: "Crimson", accessory: "Mask" },
@@ -57,14 +70,19 @@ const AXORONIN_NFTS = [
   { id: "0842", name: "Circuit Samurai",background: "Cyber Alley",     armor: "Cyber",   eyes: "Neon",    accessory: "Katana" },
   { id: "0905", name: "Ashen Blade",    background: "Shadow District", armor: "Crimson", eyes: "Void",    accessory: "Mask" },
   { id: "0961", name: "Lotus Ronin",    background: "Dojo",            armor: "Ronin",   eyes: "Laser",   accessory: "Clan Symbols" },
-];
+].map((n, i) => ({ ...n, image: AXORONIN_ART[i % AXORONIN_ART.length] }));
 
 function nftCardHTML(n){
+  const media = n.image
+    ? `<div class="nft-media has-image">
+         <img src="images/${n.image}-thumb.jpg" alt="${n.name}, AXO #${n.id}" loading="lazy">
+       </div>`
+    : `<div class="nft-media">
+         <div class="ph">[NFT IMAGE PLACEHOLDER]<br>AXO #${n.id}</div>
+       </div>`;
   return `
     <article class="nft-card" tabindex="0" aria-label="${n.name}, AXO #${n.id}">
-      <div class="nft-media">
-        <div class="ph">[NFT IMAGE PLACEHOLDER]<br>AXO #${n.id}</div>
-      </div>
+      ${media}
       <div class="nft-info">
         <div class="id">AXO #${n.id}</div>
         <h4>${n.name}</h4>
@@ -375,7 +393,9 @@ function nftCardHTML(n){
   function openModal(n){
     document.getElementById('modalId').textContent = `AXO #${n.id}`;
     document.getElementById('modalTitle').textContent = n.name;
-    document.getElementById('modalMedia').innerHTML = `[NFT IMAGE PLACEHOLDER]<br>AXO #${n.id}`;
+    document.getElementById('modalMedia').innerHTML = n.image
+      ? `<img src="images/${n.image}-large.jpg" alt="${n.name}, AXO #${n.id}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
+      : `[NFT IMAGE PLACEHOLDER]<br>AXO #${n.id}`;
     document.getElementById('modalTraits').innerHTML = `
       <div class="modal-trait-row"><span>Background</span><span>${n.background}</span></div>
       <div class="modal-trait-row"><span>Armor</span><span>${n.armor}</span></div>

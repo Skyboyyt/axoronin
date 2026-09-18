@@ -734,3 +734,33 @@ footer{ border-top:1px solid var(--border); padding: 4rem 0 2rem; margin-top: 2r
   .feature-card, .stat-card{ padding: 1.6rem 1.3rem; }
   .final-cta{ padding: 3rem 1.2rem; }
 }
+
+/* ==========================================================================
+   REAL ARTWORK — once a .hero-placeholder holds an actual image, drop the
+   dashed "placeholder" look and let the artwork fill the frame properly.
+   ========================================================================== */
+.hero-placeholder.has-image{
+  padding: 0;
+  border-style: solid;
+  border-color: var(--border-strong);
+  overflow: hidden;
+  background: var(--bg-raised);
+}
+.hero-placeholder.has-image img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: inherit;
+}
+
+/* NFT grid cards: once a real thumbnail exists, show it as a cover image
+   instead of the dashed text placeholder. */
+.nft-media.has-image{ background: var(--bg-raised); }
+.nft-media.has-image img{
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .6s var(--ease);
+}
+.nft-card:hover .nft-media.has-image img{ transform: scale(1.08); }
