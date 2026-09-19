@@ -327,97 +327,6 @@ function nftCardHTML(n){
 })();
 
 
-/* ===== collection.js (search / filter / sort / modal) ===== */
-(function(){
-  const grid = document.getElementById('fullNftGrid');
-  const resultCount = document.getElementById('resultCount');
-  const emptyState = document.getElementById('emptyState');
-  const searchInput = document.getElementById('searchInput');
-  const fBackground = document.getElementById('filterBackground');
-  const fArmor = document.getElementById('filterArmor');
-  const fEyes = document.getElementById('filterEyes');
-  const sortSelect = document.getElementById('sortSelect');
-
-  function uniqueOptions(field){
-    return [...new Set(AXORONIN_NFTS.map(n => n[field]))].sort();
-  }
-  function populateSelect(el, field, label){
-    uniqueOptions(field).forEach(val => {
-      const opt = document.createElement('option');
-      opt.value = val; opt.textContent = `${label}: ${val}`;
-      el.appendChild(opt);
-    });
-  }
-  populateSelect(fBackground, 'background', 'BG');
-  populateSelect(fArmor, 'armor', 'Armor');
-  populateSelect(fEyes, 'eyes', 'Eyes');
-
-  function currentResults(){
-    const q = searchInput.value.trim().toLowerCase();
-    let results = AXORONIN_NFTS.filter(n => {
-      const matchesQ = !q || n.name.toLowerCase().includes(q) || n.id.includes(q.replace('#',''));
-      const matchesBg = !fBackground.value || n.background === fBackground.value;
-      const matchesArmor = !fArmor.value || n.armor === fArmor.value;
-      const matchesEyes = !fEyes.value || n.eyes === fEyes.value;
-      return matchesQ && matchesBg && matchesArmor && matchesEyes;
-    });
-    const [key, dir] = sortSelect.value.split('-');
-    results.sort((a,b) => {
-      let av = key === 'id' ? a.id : a.name.toLowerCase();
-      let bv = key === 'id' ? b.id : b.name.toLowerCase();
-      return (av < bv ? -1 : av > bv ? 1 : 0) * (dir === 'desc' ? -1 : 1);
-    });
-    return results;
-  }
-
-  function render(){
-    const results = currentResults();
-    resultCount.textContent = `${results.length} of ${AXORONIN_NFTS.length} Ronin shown`;
-    grid.innerHTML = results.map(nftCardHTML).join('');
-    emptyState.hidden = results.length !== 0;
-    grid.style.display = results.length === 0 ? 'none' : 'grid';
-    grid.querySelectorAll('.nft-card').forEach((card, i) => {
-      card.addEventListener('click', () => openModal(results[i]));
-      card.addEventListener('keypress', e => { if(e.key === 'Enter') openModal(results[i]); });
-    });
-  }
-
-  [searchInput, fBackground, fArmor, fEyes, sortSelect].forEach(el => {
-    el.addEventListener('input', render);
-    el.addEventListener('change', render);
-  });
-  render();
-
-  /* -------- Modal -------- */
-  const overlay = document.getElementById('modalOverlay');
-  function openModal(n){
-    document.getElementById('modalId').textContent = `AXO #${n.id}`;
-    document.getElementById('modalTitle').textContent = n.name;
-    document.getElementById('modalMedia').innerHTML = n.image
-      ? `<img src="images/${n.image}-large.jpg" alt="${n.name}, AXO #${n.id}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">`
-      : `[NFT IMAGE PLACEHOLDER]<br>AXO #${n.id}`;
-    document.getElementById('modalTraits').innerHTML = `
-      <div class="modal-trait-row"><span>Background</span><span>${n.background}</span></div>
-      <div class="modal-trait-row"><span>Armor</span><span>${n.armor}</span></div>
-      <div class="modal-trait-row"><span>Eyes</span><span>${n.eyes}</span></div>
-      <div class="modal-trait-row"><span>Accessory</span><span>${n.accessory}</span></div>
-    `;
-    const mp = document.getElementById('modalMarketplace');
-    mp.href = AXORONIN_CONFIG.MARKETPLACE_URL.startsWith('[') ? '#' : AXORONIN_CONFIG.MARKETPLACE_URL;
-    mp.textContent = AXORONIN_CONFIG.MARKETPLACE_URL.startsWith('[') ? 'Marketplace Coming Soon' : 'View on Marketplace';
-    overlay.classList.add('open');
-    document.body.classList.add('no-scroll');
-  }
-  function closeModal(){
-    overlay.classList.remove('open');
-    document.body.classList.remove('no-scroll');
-  }
-  document.getElementById('modalClose').addEventListener('click', closeModal);
-  overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
-  window.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
-})();
-
-
 /* ===== mint.js (mint page data + FAQ) ===== */
 (function(){
   const c = AXORONIN_CONFIG;
@@ -808,4 +717,3 @@ function nftCardHTML(n){
     showRoute(route, anchor);
   });
 })();
-

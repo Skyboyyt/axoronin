@@ -418,46 +418,22 @@ The AxoRonin.</div>
 <section class="route-panel" data-route="collection" id="route-collection">
 <section class="page-hero">
     <div class="container">
-      <span class="eyebrow reveal">Full Collection</span>
-      <h1 class="reveal reveal-delay-1">MEET THE RONIN</h1>
-      <p class="reveal reveal-delay-2">Every Ronin has a story. Every trait has a purpose. Metadata shown here is placeholder — swap <code>js/nft-data.js</code> for real collection metadata when it's finalized.</p>
+      <span class="eyebrow reveal">Official Marketplace</span>
+      <h1 class="reveal reveal-delay-1">EXPLORE THE COLLECTION</h1>
+      <p class="reveal reveal-delay-2">View every AxoRonin on our official NFT collection page.</p>
     </div>
   </section>
 
   <section style="padding-top:0;">
-    <div class="container">
-      <div class="toolbar reveal">
-        <input type="search" class="search-input" id="searchInput" placeholder="Search by name or #ID..." aria-label="Search collection">
-        <select class="filter-select" id="filterBackground" aria-label="Filter by background"><option value="">Background: All</option></select>
-        <select class="filter-select" id="filterArmor" aria-label="Filter by armor"><option value="">Armor: All</option></select>
-        <select class="filter-select" id="filterEyes" aria-label="Filter by eyes"><option value="">Eyes: All</option></select>
-        <select class="filter-select" id="sortSelect" aria-label="Sort collection">
-          <option value="id-asc">Sort: ID (low–high)</option>
-          <option value="id-desc">Sort: ID (high–low)</option>
-          <option value="name-asc">Sort: Name (A–Z)</option>
-        </select>
+    <div class="container center">
+      <div class="panel reveal" style="max-width:44rem; margin-inline:auto; padding:clamp(2rem, 6vw, 4rem);">
+        <span class="eyebrow" style="justify-content:center;">AxoRonin NFTs</span>
+        <h2 style="margin-top:1rem;">THE RONIN ARE WAITING</h2>
+        <p class="muted" style="margin:1rem auto 2rem; max-width:36ch;">Discover the full AxoRonin collection on Exclusivo.</p>
+        <a href="https://exclusivo.one/collection/axoronin?tab=items" target="_blank" rel="noopener" class="btn btn-primary">View the NFT Collection</a>
       </div>
-      <p class="result-count reveal" id="resultCount"></p>
-      <div class="nft-grid reveal" id="fullNftGrid"></div>
-      <div class="empty-state" id="emptyState" hidden>No Ronin match those filters. Try clearing a filter.</div>
     </div>
   </section>
-
-  <!-- NFT detail modal — this markup was dropped during an earlier merge
-       (it used to sit as a sibling of <main> on the old standalone
-       collection.html, outside what got extracted). Restoring it here. -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button class="modal-close" id="modalClose" aria-label="Close details">✕</button>
-      <div class="modal-media" id="modalMedia"></div>
-      <div>
-        <div class="id" id="modalId" style="font-family:var(--font-tech); color:var(--text-faint); letter-spacing:.1em; font-size:.78rem;"></div>
-        <h3 id="modalTitle" style="font-size:1.6rem; margin-top:.4rem;"></h3>
-        <div id="modalTraits" style="margin-top:1.2rem;"></div>
-        <a id="modalMarketplace" href="#" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="margin-top:1.6rem;">View on Marketplace</a>
-      </div>
-    </div>
-  </div>
 </section>
 
 <section class="route-panel" data-route="roadmap" id="route-roadmap">
