@@ -21,7 +21,7 @@ const AXORONIN_CONFIG = {
   COLLECTION_SUPPLY: "[COLLECTION SUPPLY]",
   BLOCKCHAIN: "[BLOCKCHAIN]",
   MINT_PRICE: "[MINT PRICE]",
-  MINT_URL: "https://linktr.ee/AxoRonin",
+  MINT_URL: "https://exclusivo.one/collection/axoronin?tab=items",
   MARKETPLACE_URL: "[MARKETPLACE URL]",
   CONTRACT_ADDRESS: "[CONTRACT ADDRESS]",
   WHITEPAPER_URL: "whitepaper.html",
@@ -301,14 +301,14 @@ function nftCardHTML(n){
 
   const FAQ = [
     ["What is AxoRonin?", `AxoRonin is a community-driven NFT collection inspired by Japanese culture, cyberpunk aesthetics, and the unique charm of axolotls. It blends original art, storytelling and a growing community into one universe.`],
-    ["What is the Ronin Clan?", `The Ronin Clan is the AxoRonin community — the people who follow the lore, join Discord, shape decisions through voting, and help build the universe over time.`],
+    ["What is the Ronin Clan?", `The Ronin Clan is the AxoRonin community: the people who follow the lore, join Discord, shape decisions through voting, and help build the universe over time.`],
     ["How many NFTs will there be?", `The total collection supply is ${c.COLLECTION_SUPPLY}. This figure will be confirmed officially before mint.`],
     ["What blockchain is AxoRonin built on?", `AxoRonin will be built on ${c.BLOCKCHAIN}. Official confirmation will be shared through Discord and X before launch.`],
-    ["Where can I mint?", `All official mint links and announcements are shared through our Linktree: ${c.MINT_URL}.`],
+    ["Where can I mint?", `Visit the official AxoRonin collection on Exclusivo: ${c.MINT_URL}.`],
     ["Where can I buy AxoRonin?", `After mint, AxoRonin will be available on the secondary marketplace listed at ${c.MARKETPLACE_URL}.`],
-    ["What do holders receive?", `Holder benefits are expected to include community access, early announcements, voting opportunities, digital rewards and selected campaign perks. Specific benefits will be confirmed officially — see the Ronin Clan page for details.`],
+    ["What do holders receive?", `Holder benefits are expected to include community access, early announcements, voting opportunities, digital rewards and selected campaign perks. Specific benefits will be confirmed officially. See the Ronin Clan page for details.`],
     ["Will there be physical collectibles?", `Selected campaigns and milestones may feature limited physical AxoRonin collectibles, including 3D-printed pieces. These are not guaranteed for every holder or every drop.`],
-    ["Is there a roadmap?", `Yes — the Ronin Journey roadmap outlines five phases from The Awakening through Legacy. See the Roadmap page for the full timeline.`],
+    ["Is there a roadmap?", `Yes. The Ronin Journey roadmap outlines five phases from The Awakening through Legacy. See the Roadmap page for the full timeline.`],
     ["Can the roadmap change?", `Yes. Roadmap milestones represent the current direction of AxoRonin and may evolve based on development, community feedback and project conditions.`],
   ];
 
@@ -386,7 +386,7 @@ function nftCardHTML(n){
      Mint FAQ
      --------------------------------------------------------------- */
   const MINT_FAQ = [
-    ["Where can I mint?", `Tap "Mint" anywhere on the site — it takes you straight to our Linktree (${c.MINT_URL}) with the official, up-to-date mint link.`],
+    ["Where can I mint?", `Tap "Mint" anywhere on the site. It takes you straight to the official AxoRonin collection on Exclusivo (${c.MINT_URL}).`],
     ["What do I need to mint?", `A compatible wallet for ${c.BLOCKCHAIN} and enough funds to cover the mint price (${c.MINT_PRICE}) plus network gas fees. Full instructions will be shared before mint.`],
     ["Is there a limit per wallet?", `Any per-wallet or per-transaction limits will be confirmed officially before the mint goes live.`],
     ["What happens after I mint?", `Minted AxoRonin will appear in your connected wallet and become visible on the marketplace listed at ${c.MARKETPLACE_URL}.`],
@@ -703,8 +703,8 @@ function nftCardHTML(n){
     }
 
     document.title = route === 'home'
-      ? 'AxoRonin — Honor the Code. Embrace the Chaos.'
-      : `${route.charAt(0).toUpperCase()}${route.slice(1)} — AxoRonin`;
+      ? 'AxoRonin: Honor the Code. Embrace the Chaos.'
+      : `${route.charAt(0).toUpperCase()}${route.slice(1)}: AxoRonin`;
   }
 
   window.addEventListener('hashchange', () => {
