@@ -764,3 +764,78 @@ footer{ border-top:1px solid var(--border); padding: 4rem 0 2rem; margin-top: 2r
   transition: transform .6s var(--ease);
 }
 .nft-card:hover .nft-media.has-image img{ transform: scale(1.08); }
+
+/* ==========================================================================
+   RONIN NAME GENERATOR
+   Reuses existing tokens (--purple/--pink/--blue, --font-display/--font-tech,
+   .panel, .trait-tab, .btn) so it inherits the site's look without any new
+   color or type choices.
+   ========================================================================== */
+.namegen-panel{
+  padding: clamp(2rem, 4vw, 3rem);
+  text-align: center;
+  max-width: 720px;
+  margin-inline: auto;
+}
+.namegen-modes{ justify-content: center; margin-bottom: 2rem; }
+
+.namegen-display{
+  min-height: 190px;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-m);
+  background: var(--grad-panel);
+  padding: 2rem 1.5rem;
+  overflow: hidden;
+}
+.namegen-placeholder{ color: var(--text-faint); }
+.namegen-glyph{
+  font-family: var(--font-display); font-size: 2.6rem; display: block;
+  margin-bottom: .6rem; opacity: .35;
+}
+.namegen-placeholder p{ font-family: var(--font-tech); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; }
+
+.namegen-result{ width: 100%; }
+.namegen-name{
+  font-family: var(--font-tech); font-weight: 700; letter-spacing: .04em;
+  font-size: clamp(1.8rem, 5vw, 2.6rem);
+  background: var(--grad-signal);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  word-break: break-word;
+}
+.namegen-kanji{
+  font-family: var(--font-display); font-weight: 900; font-size: clamp(1.6rem, 4vw, 2.1rem);
+  margin-top: .7rem; color: var(--text);
+}
+.namegen-meaning{
+  font-family: var(--font-tech); letter-spacing: .18em; text-transform: uppercase;
+  font-size: .78rem; color: var(--text-faint); margin-top: .8rem;
+}
+
+/* Brief text-scramble/glitch state while a name is "generating" */
+.namegen-name.is-glitching, .namegen-kanji.is-glitching{
+  animation: namegen-flicker .5s steps(2, end) infinite;
+}
+@keyframes namegen-flicker{
+  0%, 100%{ opacity: 1; transform: translateX(0); }
+  45%{ opacity: .55; transform: translateX(-1px); }
+  55%{ opacity: .85; transform: translateX(1px); }
+}
+@media (prefers-reduced-motion: reduce){
+  .namegen-name.is-glitching, .namegen-kanji.is-glitching{ animation: none; }
+}
+
+.namegen-actions{ display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem; }
+.namegen-count{
+  margin-top: 1.2rem; font-family: var(--font-tech); font-size: .72rem;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint);
+}
+
+.namegen-copy-flash{ color: var(--blue) !important; }
+
+@media (max-width: 480px){
+  .namegen-display{ padding: 1.6rem 1.2rem; min-height: 170px; }
+  .namegen-actions{ flex-direction: column; align-items: stretch; }
+  .namegen-actions .btn{ width: 100%; }
+}

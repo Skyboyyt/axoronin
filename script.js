@@ -493,6 +493,241 @@ function nftCardHTML(n){
 
 
 /* ==========================================================================
+   RONIN NAME GENERATOR
+   Lives on the Clan page (route "clan"). Self-contained module — no changes
+   to any other page, nav, or existing feature.
+
+   Design notes:
+   - Kanji is never assembled from random characters. Every name traces back
+     to one or more entries in BASE_WORDS, each a real word/kanji/meaning
+     triple. Cyber/Hybrid modes only ever attach ASCII suffixes or another
+     base word's romaji — the displayed kanji + meaning always belongs to a
+     real base word, verbatim.
+   - No backend exists on this static site, so "uniqueness" is tracked with
+     localStorage (per-visitor). This is the lightweight solution appropriate
+     for the current project — see the chat reply for how to swap in a real
+     backend later if one gets added.
+   ========================================================================== */
+(function(){
+  "use strict";
+
+  const generateBtn = document.getElementById('namegenGenerateBtn');
+  if(!generateBtn) return; // Clan page markup not present — nothing to wire up.
+
+  const copyBtn = document.getElementById('namegenCopyBtn');
+  const placeholder = document.getElementById('namegenPlaceholder');
+  const resultEl = document.getElementById('namegenResult');
+  const nameEl = document.getElementById('namegenName');
+  const kanjiEl = document.getElementById('namegenKanji');
+  const meaningEl = document.getElementById('namegenMeaning');
+  const countEl = document.getElementById('namegenCount');
+  const modeButtons = document.querySelectorAll('.namegen-modes .trait-tab');
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Curated word pool — every entry is a real, verified kanji pairing ---- */
+  const BASE_WORDS = [
+    { r: "Kurogane", k: "黒鉄", m: "Black Iron" },
+    { r: "Kuro", k: "黒", m: "Black" },
+    { r: "Raiko", k: "雷光", m: "Lightning Glow" },
+    { r: "Rai", k: "雷", m: "Thunder" },
+    { r: "Raiken", k: "雷剣", m: "Thunder Blade" },
+    { r: "Kagejin", k: "影刃", m: "Shadow Blade" },
+    { r: "Kage", k: "影", m: "Shadow" },
+    { r: "Yoru", k: "夜", m: "Night" },
+    { r: "Yorugiri", k: "夜霧", m: "Night Fog" },
+    { r: "Kiri", k: "霧", m: "Mist" },
+    { r: "Akagiri", k: "赤霧", m: "Red Mist" },
+    { r: "Ryuu", k: "龍", m: "Dragon" },
+    { r: "Honoo", k: "炎", m: "Flame" },
+    { r: "Shinkai", k: "深海", m: "Deep Sea" },
+    { r: "Ginga", k: "銀河", m: "Galaxy" },
+    { r: "Tsuki", k: "月", m: "Moon" },
+    { r: "Tsukikage", k: "月影", m: "Moon Shadow" },
+    { r: "Hikari", k: "光", m: "Light" },
+    { r: "Zankou", k: "斬光", m: "Slashing Light" },
+    { r: "Ken", k: "剣", m: "Sword" },
+    { r: "Ookami", k: "狼", m: "Wolf" },
+    { r: "Karasu", k: "烏", m: "Crow" },
+    { r: "Yami", k: "闇", m: "Darkness" },
+    { r: "Gin", k: "銀", m: "Silver" },
+    { r: "Hai", k: "灰", m: "Ash" },
+    { r: "Sen", k: "戦", m: "War" },
+    { r: "Michi", k: "道", m: "Path" },
+    { r: "Bushi", k: "武士", m: "Warrior" },
+    { r: "Ronin", k: "浪人", m: "Wandering Warrior" },
+    { r: "Sakura", k: "桜", m: "Cherry Blossom" },
+    { r: "Byakko", k: "白虎", m: "White Tiger" },
+  ];
+  const CYBER_SUFFIXES = ["-X", "//X", "-07", "-09", "_V2", ".EXE", "-Z", "//9"];
+  const CYBER_LEXICON = ["byte", "code", "net", "flux", "core", "volt", "sync", "grid"];
+
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+  function buildRonin(){
+    const w = pick(BASE_WORDS);
+    return { name: w.r, kanji: w.k, meaning: w.m };
+  }
+
+  function buildCyber(){
+    const w = pick(BASE_WORDS);
+    const suffix = pick(CYBER_SUFFIXES);
+    return { name: `${w.r.toUpperCase()}${suffix}`, kanji: w.k, meaning: w.m };
+  }
+
+  function buildHybrid(){
+    const anchor = pick(BASE_WORDS);
+    const strategy = Math.random();
+    let name;
+    if(strategy < 0.34){
+      // Japanese word + cyber lexicon fragment, e.g. "Kurobyte"
+      name = anchor.r + pick(CYBER_LEXICON);
+    } else if(strategy < 0.67){
+      // Two Japanese words fused, e.g. "Yorukage"
+      let other = pick(BASE_WORDS);
+      let guard = 0;
+      while(other.r === anchor.r && guard++ < 10) other = pick(BASE_WORDS);
+      name = anchor.r + other.r.toLowerCase();
+    } else {
+      // Japanese word + cyber suffix, e.g. "Raikage-X"
+      name = anchor.r + pick(CYBER_SUFFIXES);
+    }
+    return { name, kanji: anchor.k, meaning: anchor.m };
+  }
+
+  const BUILDERS = { ronin: buildRonin, cyber: buildCyber, hybrid: buildHybrid };
+
+  /* ---- Uniqueness tracking (localStorage — no backend on this static site) ---- */
+  const HISTORY_KEY = 'axoronin-namegen-history';
+  function loadHistory(){
+    try{
+      const raw = localStorage.getItem(HISTORY_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveHistory(list){
+    try{ localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); }catch(e){ /* storage unavailable — degrade silently */ }
+  }
+  let history = loadHistory();
+
+  function generateUnique(mode){
+    const build = BUILDERS[mode] || buildHybrid;
+    let result = build();
+    let attempts = 0;
+    // Try to avoid repeats; if the mode's pool is exhausted, fall back to
+    // whatever comes out rather than looping forever.
+    while(history.includes(result.name) && attempts < 60){
+      result = build();
+      attempts++;
+    }
+    if(!history.includes(result.name)){
+      history.push(result.name);
+      saveHistory(history);
+    }
+    return result;
+  }
+
+  function updateCount(){
+    countEl.textContent = history.length > 0
+      ? `${history.length} unique Ronin name${history.length === 1 ? '' : 's'} discovered so far`
+      : '';
+  }
+
+  function currentMode(){
+    const active = document.querySelector('.namegen-modes .trait-tab.active');
+    return active ? active.dataset.mode : 'hybrid';
+  }
+
+  modeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modeButtons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+      btn.classList.add('active');
+      btn.setAttribute('aria-selected', 'true');
+    });
+  });
+
+  const GLITCH_CHARS = 'アイウエオカキクケコサシ0123456789#//_-XZ'.split('');
+  function scrambleOnce(length){
+    let s = '';
+    for(let i = 0; i < length; i++) s += pick(GLITCH_CHARS);
+    return s;
+  }
+
+  function reveal(result){
+    placeholder.hidden = true;
+    resultEl.hidden = false;
+    nameEl.textContent = result.name;
+    kanjiEl.textContent = result.kanji;
+    meaningEl.textContent = result.meaning;
+    copyBtn.hidden = false;
+    copyBtn.textContent = 'Copy Name';
+    copyBtn.classList.remove('namegen-copy-flash');
+    updateCount();
+  }
+
+  function generate(){
+    generateBtn.disabled = true;
+    const mode = currentMode();
+    const result = generateUnique(mode);
+
+    if(reducedMotion){
+      reveal(result);
+      generateBtn.disabled = false;
+      return;
+    }
+
+    placeholder.hidden = true;
+    resultEl.hidden = false;
+    nameEl.classList.add('is-glitching');
+    kanjiEl.classList.add('is-glitching');
+
+    const scrambleDuration = 480;
+    const tickMs = 55;
+    const ticks = Math.floor(scrambleDuration / tickMs);
+    let tick = 0;
+    const nameLen = Math.min(result.name.length, 14);
+    const kanjiLen = result.kanji.length;
+
+    const interval = setInterval(() => {
+      nameEl.textContent = scrambleOnce(nameLen);
+      kanjiEl.textContent = scrambleOnce(kanjiLen);
+      tick++;
+      if(tick >= ticks){
+        clearInterval(interval);
+        nameEl.classList.remove('is-glitching');
+        kanjiEl.classList.remove('is-glitching');
+        reveal(result);
+        generateBtn.disabled = false;
+      }
+    }, tickMs);
+  }
+
+  generateBtn.addEventListener('click', () => {
+    generateBtn.textContent = 'Generate Again';
+    generate();
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    const text = nameEl.textContent;
+    try{
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = 'Copied!';
+      copyBtn.classList.add('namegen-copy-flash');
+      setTimeout(() => {
+        copyBtn.textContent = 'Copy Name';
+        copyBtn.classList.remove('namegen-copy-flash');
+      }, 1500);
+    }catch(e){
+      copyBtn.textContent = 'Copy failed';
+      setTimeout(() => { copyBtn.textContent = 'Copy Name'; }, 1500);
+    }
+  });
+
+  updateCount();
+})();
+
+
+/* ==========================================================================
    ROUTER — single-file navigation between AxoRonin's sections
    Hash format:  #route            e.g. #collection
                  #route:anchorId   e.g. #home:home-faq, #whitepaper:wp-vision
@@ -528,6 +763,17 @@ function nftCardHTML(n){
       // Unknown route in the URL — fall back to home instead of a blank page.
       document.querySelector('.route-panel[data-route="home"]')?.classList.add('active');
       route = 'home';
+    }
+
+    // Every other route panel starts at display:none, so its .reveal elements
+    // (opacity:0 until scrolled into view) never get a first IntersectionObserver
+    // check — they'd stay invisible forever. Home is exempt: it's active by
+    // default from page load, so its normal scroll-triggered reveal already
+    // works and shouldn't be shortcut here.
+    if(route !== 'home'){
+      const panel = document.querySelector(`.route-panel[data-route="${route}"]`);
+      panel?.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+      panel?.querySelectorAll('.phase').forEach(el => el.classList.add('in-view'));
     }
 
     const currentHash = anchor ? `${route}:${anchor}` : route;
