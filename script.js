@@ -33,8 +33,9 @@ const AXORONIN_CONFIG = {
   X_URL: "https://x.com/axoroninnft",
   X_HANDLE: "@AxoRoninNFT",
 
-  // Web3 status flag: flip to true once wallet functionality is wired up.
-  MINT_LIVE: false,
+  // Mint status: true = minting is open on Exclusivo (MINT_URL).
+  // Set to false to show "Mint Coming Soon" across the mint page instead.
+  MINT_LIVE: true,
 
   COPYRIGHT_YEAR: 2026,
 };
@@ -387,10 +388,10 @@ function artCtaTileHTML(){
     ["What is AxoRonin?", `AxoRonin is a community-driven NFT collection inspired by Japanese culture, cyberpunk aesthetics, and the unique charm of axolotls. It blends original art, storytelling and a growing community into one universe.`],
     ["What is the Ronin Clan?", `The Ronin Clan is the AxoRonin community: the people who follow the lore, join ${link(c.DISCORD_URL, "Discord")}, shape decisions through voting, and help build the universe over time.`],
     ["How many NFTs will there be?", isPlaceholder(c.COLLECTION_SUPPLY)
-      ? `The total collection supply will be confirmed officially on Discord and X before mint.`
+      ? `See the live supply on the official ${link(c.MINT_URL, "Exclusivo collection page")}. Official figures are also shared on Discord and X.`
       : `The total collection supply is ${escapeHTML(c.COLLECTION_SUPPLY)}.`],
     ["What blockchain is AxoRonin built on?", isPlaceholder(c.BLOCKCHAIN)
-      ? `The blockchain will be confirmed officially through Discord and X before launch.`
+      ? `Network details are listed on the official ${link(c.MINT_URL, "Exclusivo collection page")}.`
       : `AxoRonin is built on ${escapeHTML(c.BLOCKCHAIN)}.`],
     ["Where can I mint or buy AxoRonin?", `On the official AxoRonin collection page on ${link(c.MINT_URL, "Exclusivo")}. Always double-check you are on exclusivo.one and only trust links shared from our official Discord and X.`],
     ["What do holders receive?", `Holder benefits are expected to include community access, early announcements, voting opportunities, digital rewards and selected campaign perks. Specific benefits will be confirmed officially. See the <a class="text-link" href="#clan">Ronin Clan page</a> for details.`],
@@ -427,63 +428,61 @@ function artCtaTileHTML(){
 (function(){
   const c = AXORONIN_CONFIG;
 
-  const setText = (id, v) => { const el = document.getElementById(id); if(el){ el.textContent = configText(v); el.classList.toggle('is-tba', isPlaceholder(v)); } };
-  setText('mintPrice', c.MINT_PRICE);
-  setText('mintSupply', c.COLLECTION_SUPPLY);
-  setText('mintNetwork', c.BLOCKCHAIN);
-  setText('contractAddr', c.CONTRACT_ADDRESS);
+  /* Collection facts: rows with a real value are shown; placeholder rows are
+     hidden (Exclusivo shows the live figures). The note only appears when
+     at least one row is still missing. */
+  let missing = 0;
+  document.querySelectorAll('[data-mint-row]').forEach(row => {
+    const v = c[row.dataset.mintRow];
+    if(isPlaceholder(v)){ row.hidden = true; missing++; return; }
+    row.lastElementChild.textContent = v;
+  });
+  const note = document.getElementById('mintNote');
+  if(note) note.hidden = missing === 0;
 
+  /* Contract address: only shown once it is official. */
+  const contractBox = document.getElementById('contractBox');
+  const contractAddr = document.getElementById('contractAddr');
+  if(contractBox && contractAddr){
+    if(isPlaceholder(c.CONTRACT_ADDRESS)) contractBox.hidden = true;
+    else contractAddr.textContent = c.CONTRACT_ADDRESS;
+  }
   const copyBtn = document.getElementById('copyContract');
-  if(copyBtn){
-    if(isPlaceholder(c.CONTRACT_ADDRESS)) copyBtn.hidden = true;
-    copyBtn.addEventListener('click', async () => {
-      try{
-        await navigator.clipboard.writeText(c.CONTRACT_ADDRESS);
-        copyBtn.textContent = 'Copied';
-      }catch(e){ copyBtn.textContent = 'Copy failed'; }
-      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-    });
-  }
+  copyBtn?.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(c.CONTRACT_ADDRESS);
+      copyBtn.textContent = 'Copied';
+    }catch(e){ copyBtn.textContent = 'Copy failed'; }
+    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+  });
 
-  /* Quantity selector: wired up but inert until MINT_LIVE is true, so there
-     is no fake mint interaction. */
-  let qty = 1;
-  const MAX_QTY = 10;
-  const qtyVal = document.getElementById('qtyVal');
-  const qtyMinus = document.getElementById('qtyMinus');
-  const qtyPlus = document.getElementById('qtyPlus');
-  function renderQty(){
-    if(!qtyVal) return;
-    qtyVal.textContent = qty;
-    qtyMinus.disabled = !c.MINT_LIVE || qty <= 1;
-    qtyPlus.disabled = !c.MINT_LIVE || qty >= MAX_QTY;
+  /* Mint call-to-action + status, driven by MINT_LIVE. */
+  const cta = document.getElementById('mintCta');
+  const status = document.getElementById('mintStatus');
+  const statusText = document.getElementById('mintStatusText');
+  if(cta){
+    cta.href = c.MINT_URL;
+    if(!c.MINT_LIVE){
+      cta.textContent = 'Mint Coming Soon';
+      cta.classList.add('is-disabled');
+      cta.setAttribute('aria-disabled', 'true');
+      cta.removeAttribute('href');
+    }
   }
-  qtyMinus?.addEventListener('click', () => { if(qty > 1){ qty--; renderQty(); } });
-  qtyPlus?.addEventListener('click', () => { if(qty < MAX_QTY){ qty++; renderQty(); } });
-  renderQty();
-
-  /* Wallet connection stub. Intentionally does NOT connect to any real
-     wallet or request permissions. Replace connectWallet() with real logic
-     (e.g. wagmi/ethers/viem) once mint is ready, and flip MINT_LIVE. */
-  const connectBtn = document.getElementById('connectBtn');
-  async function connectWallet(){
-    // TODO: integrate real wallet connection (never request unnecessary
-    // permissions, never handle private keys client-side).
-    console.info('Wallet connection not yet configured.');
-  }
-  if(connectBtn){
-    connectBtn.disabled = !c.MINT_LIVE;
-    connectBtn.textContent = c.MINT_LIVE ? 'Connect Wallet' : 'Mint Coming Soon';
-    if(c.MINT_LIVE) connectBtn.addEventListener('click', connectWallet);
+  if(status && statusText){
+    status.classList.toggle('is-live', !!c.MINT_LIVE);
+    statusText.textContent = c.MINT_LIVE
+      ? 'Minting is live. Only mint through exclusivo.one or links shared on our official Discord and X.'
+      : 'Minting is not yet live. Follow Discord and X for the official mint announcement.';
   }
 
   const MINT_FAQ = [
-    ["Where can I mint?", `Tap "Mint" anywhere on the site. It takes you straight to the official AxoRonin collection on <a class="text-link" href="${c.MINT_URL}" target="_blank" rel="noopener">Exclusivo</a>.`],
+    ["Where can I mint?", `Tap "Mint" anywhere on the site. It takes you straight to the official AxoRonin collection on <a class="text-link" href="${c.MINT_URL}" target="_blank" rel="noopener">Exclusivo</a>, where minting is live.`],
     ["What do I need to mint?", isPlaceholder(c.BLOCKCHAIN)
-      ? `A compatible crypto wallet and enough funds to cover the mint price plus network fees. Network and wallet details will be shared before mint.`
+      ? `A compatible crypto wallet and enough funds to cover the mint price plus network fees. Exclusivo shows the supported network and wallets on the mint page.`
       : `A compatible wallet for ${escapeHTML(c.BLOCKCHAIN)} and enough funds to cover the mint price${isPlaceholder(c.MINT_PRICE) ? '' : ` (${escapeHTML(c.MINT_PRICE)})`} plus network fees.`],
-    ["Is there a limit per wallet?", `Any per-wallet or per-transaction limits will be confirmed officially before the mint goes live.`],
-    ["What happens after I mint?", `Your AxoRonin will appear in your wallet and on the official Exclusivo collection page.`],
+    ["Is there a limit per wallet?", `Any per-wallet or per-transaction limits are shown on the Exclusivo mint page before you confirm.`],
+    ["What happens after I mint?", `Your AxoRonin will appear in your wallet and on the official Exclusivo collection page. Then come say hi in the Ronin Clan on <a class="text-link" href="${c.DISCORD_URL}" target="_blank" rel="noopener">Discord</a>.`],
   ];
   window.AXORONIN_renderFaq(document.getElementById('mintFaqList'), MINT_FAQ, 'mintfaq');
 })();

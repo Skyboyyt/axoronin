@@ -105,7 +105,7 @@
 
     <div class="hero-content">
       <div class="inner">
-        <span class="hero-tag"><span class="dot"></span>The Ronin Clan is awakening</span>
+        <a class="hero-tag hero-tag-live" href="https://exclusivo.one/collection/axoronin?tab=items" target="_blank" rel="noopener"><span class="dot"></span>Mint is live <span class="hero-tag-cta">Mint on Exclusivo&nbsp;→</span></a>
         <h1>HONOR THE CODE.<span class="line2">EMBRACE THE CHAOS.</span></h1>
         <p class="lead">A community-driven NFT collection where Japanese culture, cyberpunk aesthetics, and the chaotic charm of axolotls collide.</p>
         <div class="hero-actions">
@@ -256,7 +256,7 @@
           <p>The AxoRonin emerge from the neon shadows. Lore, identity and the Clan take shape.</p>
         </div>
         <div class="feature-card panel reveal reveal-delay-1">
-          <span class="eyebrow">Phase II</span>
+          <span class="eyebrow">Phase II <span class="live-badge">Live</span></span>
           <h3>The Mint</h3>
           <p>The journey begins with public mint, holder verification and first rewards.</p>
         </div>
@@ -640,7 +640,7 @@ The AxoRonin.</div>
         </div>
 
         <div class="phase panel">
-          <span class="tag">Phase II</span>
+          <span class="tag">Phase II <span class="live-badge">Live now</span></span>
           <h3>The Mint</h3>
           <p class="quote">"The journey begins."</p>
           <ul>
@@ -927,7 +927,7 @@ The AxoRonin.</div>
     <div class="container">
       <span class="eyebrow reveal">Mint</span>
       <h1 class="reveal reveal-delay-1">MINT AXORONIN</h1>
-      <p class="reveal reveal-delay-2">Everything you need to know before you mint. Official mint details are announced first on Discord and X.</p>
+      <p class="reveal reveal-delay-2">The AxoRonin mint is live on Exclusivo, our official marketplace. Here is everything you need to know before you claim your Ronin.</p>
     </div>
   </section>
 
@@ -942,25 +942,18 @@ The AxoRonin.</div>
       <div class="mint-panel panel reveal reveal-delay-1">
         <h2 class="mint-title">AxoRonin Collection</h2>
 
-        <div class="mint-row"><span>Mint Price</span><span id="mintPrice"></span></div>
-        <div class="mint-row"><span>Supply</span><span id="mintSupply"></span></div>
-        <div class="mint-row"><span>Remaining</span><span data-config="REMAINING_SUPPLY"></span></div>
-        <div class="mint-row"><span>Network</span><span id="mintNetwork"></span></div>
+        <p class="mint-note" id="mintNote">Price, supply and remaining Ronin are shown live on the Exclusivo mint page.</p>
 
-        <div class="qty-wrap">
-          <span class="qty-label" id="qtyLabel">Quantity</span>
-          <div class="qty-control" role="group" aria-labelledby="qtyLabel">
-            <button class="qty-btn" id="qtyMinus" disabled aria-label="Decrease quantity">–</button>
-            <span class="qty-val" id="qtyVal" aria-live="polite">1</span>
-            <button class="qty-btn" id="qtyPlus" disabled aria-label="Increase quantity">+</button>
-          </div>
-        </div>
+        <div class="mint-row" data-mint-row="MINT_PRICE"><span>Mint Price</span><span></span></div>
+        <div class="mint-row" data-mint-row="COLLECTION_SUPPLY"><span>Supply</span><span></span></div>
+        <div class="mint-row" data-mint-row="REMAINING_SUPPLY"><span>Remaining</span><span></span></div>
+        <div class="mint-row" data-mint-row="BLOCKCHAIN"><span>Network</span><span></span></div>
 
-        <button class="btn btn-primary btn-block mint-cta" id="connectBtn" type="button" disabled>Mint Coming Soon</button>
+        <a class="btn btn-primary btn-block mint-cta" id="mintCta" href="https://exclusivo.one/collection/axoronin?tab=items" target="_blank" rel="noopener">Mint on Exclusivo</a>
 
-        <div class="status-banner" role="status"><span class="dot"></span><span>Minting is not yet live. Follow Discord and X for the official mint announcement.</span></div>
+        <div class="status-banner" id="mintStatus" role="status"><span class="dot"></span><span id="mintStatusText">Minting is live. Only mint through exclusivo.one or links shared on our official Discord and X.</span></div>
 
-        <div class="contract-box">
+        <div class="contract-box" id="contractBox">
           <span class="contract-info"><span class="contract-label">Contract</span><span id="contractAddr" class="mono"></span></span>
           <button class="copy-btn" id="copyContract" type="button">Copy</button>
         </div>
