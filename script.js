@@ -1,209 +1,196 @@
 /* ============================================================
    AXORONIN — script.js
-   Combined: config, NFT data, core UI behavior, page logic
-   (home, collection, mint), and the single-page hash router.
+   Config, artwork data, core UI behavior, page logic
+   (home, collection, clan, mint), and the single-page hash router.
    ============================================================ */
 
-/* ===== config.js ===== */
 /* ==========================================================================
-   AXORONIN — CENTRAL CONFIGURATION
-   Edit this file to update project data across the entire site.
-   Anything wrapped in [BRACKETS] is a placeholder — replace with official
-   information/assets when available. Nothing here is invented "official"
-   data; unknowns are explicit placeholders.
+   CENTRAL CONFIGURATION
+   Edit this block to update project data across the entire site.
+   Anything wrapped in [BRACKETS] is a placeholder: visitors never see the
+   bracket text. Placeholders render as "To be announced" (or are hidden,
+   e.g. the Clan stats) until you replace them with official values.
    ========================================================================== */
-
 const AXORONIN_CONFIG = {
   PROJECT_NAME: "AxoRonin",
   COMMUNITY_NAME: "The Ronin Clan",
   TAGLINE: "Honor the Code. Embrace the Chaos.",
 
   COLLECTION_SUPPLY: "[COLLECTION SUPPLY]",
+  REMAINING_SUPPLY: "[REMAINING SUPPLY]",
   BLOCKCHAIN: "[BLOCKCHAIN]",
   MINT_PRICE: "[MINT PRICE]",
   MINT_URL: "https://exclusivo.one/collection/axoronin?tab=items",
-  MARKETPLACE_URL: "[MARKETPLACE URL]",
+  MARKETPLACE_URL: "https://exclusivo.one/collection/axoronin?tab=items",
   CONTRACT_ADDRESS: "[CONTRACT ADDRESS]",
-  WHITEPAPER_URL: "whitepaper.html",
+
+  // Clan stats: each card stays hidden until its value is real.
+  CLAN_MEMBERS: "[CLAN MEMBERS]",
+  COLLABORATIONS: "[COLLABORATIONS]",
+  COMMUNITY_EVENTS: "[COMMUNITY EVENTS]",
 
   DISCORD_URL: "https://discord.gg/pBqjT6BPS",
   X_URL: "https://x.com/axoroninnft",
   X_HANDLE: "@AxoRoninNFT",
 
-  // Web3 status flag — flip to true once wallet functionality is wired up.
-  MINT_LIVE: false,
+  // Mint status: true = minting is open on Exclusivo (MINT_URL).
+  // Set to false to show "Mint Coming Soon" across the mint page instead.
+  MINT_LIVE: true,
 
   COPYRIGHT_YEAR: 2026,
 };
-
-// Freeze so pages can't accidentally mutate shared config at runtime.
 Object.freeze(AXORONIN_CONFIG);
 
-
-/* ===== nft-data.js ===== */
-/* Placeholder NFT metadata — no real rarity % or imagery invented.
-   Swap this array for real collection metadata when available; the
-   render functions in home-data.js / collection.js only expect this shape. */
-/* Seven real character portraits are cycled across the placeholder metadata
-   below purely as visual stand-ins — swap this array for real collection
-   metadata (and per-token images) once it exists. */
-const AXORONIN_ART = [
-  "axo-bubblegum-oni",
-  "axo-frostbreath-sakura",
-  "axo-zipper-mouth",
-  "axo-bamboo-moon",
-  "axo-foxmask-sunset",
-  "axo-lightning-dragon",
-  "axo-mecha-oni-pipe",
-];
-
-const AXORONIN_NFTS = [
-  { id: "0042", name: "Neon Ronin",     background: "Neo Tokyo",       armor: "Ronin",   eyes: "Neon",    accessory: "Katana" },
-  { id: "0107", name: "Sakura Wanderer",background: "Sakura Night",    armor: "Samurai", eyes: "Crimson", accessory: "Mask" },
-  { id: "0219", name: "Void Katana",    background: "Shadow District", armor: "Shadow",  eyes: "Void",    accessory: "Katana" },
-  { id: "0334", name: "Cyber Dojo",     background: "Dojo",            armor: "Cyber",   eyes: "Laser",   accessory: "Cyber Gear" },
-  { id: "0427", name: "Crimson Blade",  background: "Cyber Alley",     armor: "Crimson", eyes: "Crimson", accessory: "Katana" },
-  { id: "0518", name: "Alley Ghost",    background: "Cyber Alley",     armor: "Shadow",  eyes: "Void",    accessory: "Mask" },
-  { id: "0603", name: "Clan Sentinel",  background: "Dojo",            armor: "Samurai", eyes: "Neon",    accessory: "Clan Symbols" },
-  { id: "0711", name: "Laser Ronin",    background: "Neo Tokyo",       armor: "Ronin",   eyes: "Laser",   accessory: "Cyber Gear" },
-  { id: "0788", name: "Bloom Shadow",   background: "Sakura Night",    armor: "Shadow",  eyes: "Crimson", accessory: "Hats" },
-  { id: "0842", name: "Circuit Samurai",background: "Cyber Alley",     armor: "Cyber",   eyes: "Neon",    accessory: "Katana" },
-  { id: "0905", name: "Ashen Blade",    background: "Shadow District", armor: "Crimson", eyes: "Void",    accessory: "Mask" },
-  { id: "0961", name: "Lotus Ronin",    background: "Dojo",            armor: "Ronin",   eyes: "Laser",   accessory: "Clan Symbols" },
-].map((n, i) => ({ ...n, image: AXORONIN_ART[i % AXORONIN_ART.length] }));
-
-function nftCardHTML(n){
-  const media = n.image
-    ? `<div class="nft-media has-image">
-         <img src="images/${n.image}-thumb.jpg" alt="${n.name}, AXO #${n.id}" loading="lazy">
-       </div>`
-    : `<div class="nft-media">
-         <div class="ph">[NFT IMAGE PLACEHOLDER]<br>AXO #${n.id}</div>
-       </div>`;
-  return `
-    <article class="nft-card" tabindex="0" aria-label="${n.name}, AXO #${n.id}">
-      ${media}
-      <div class="nft-info">
-        <div class="id">AXO #${n.id}</div>
-        <h4>${n.name}</h4>
-        <div class="nft-traits">
-          <span class="trait-chip">${n.background}</span>
-          <span class="trait-chip">${n.armor}</span>
-          <span class="trait-chip">${n.eyes}</span>
-          <span class="trait-chip">${n.accessory}</span>
-        </div>
-      </div>
-    </article>`;
+const TBA = "To be announced";
+/** True when a config value is still a [PLACEHOLDER]. */
+function isPlaceholder(v){ return typeof v !== "string" || v.trim() === "" || /^\[.*\]$/.test(v.trim()); }
+/** Visitor-facing text for a config value. */
+function configText(v){ return isPlaceholder(v) ? TBA : v; }
+function escapeHTML(str){
+  return String(str).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
 }
 
 
-/* ===== main.js (theme, loader, cursor, reveals, FAQ, trait tabs, sakura) ===== */
+/* ==========================================================================
+   ARTWORK
+   The seven official character portraits currently in /images. Add entries
+   here as new artwork is released; every gallery on the site reads from it.
+   ========================================================================== */
+const AXORONIN_ART = [
+  { file: "axo-frostbreath-sakura", name: "Frostbreath",      note: "Cherry blossoms, moonlit shrine" },
+  { file: "axo-bubblegum-oni",      name: "Bubblegum Oni",    note: "Red oni mask, katana" },
+  { file: "axo-foxmask-sunset",     name: "Kitsune Dusk",     note: "Fox mask, Tokyo sunset" },
+  { file: "axo-bamboo-moon",        name: "Bamboo Moon",      note: "Moonlit bamboo grove" },
+  { file: "axo-lightning-dragon",   name: "Lightning Dragon", note: "Storm-forged souvenir jacket" },
+  { file: "axo-zipper-mouth",       name: "Zipper Grin",      note: "Techwear, silent smile" },
+  { file: "axo-mecha-oni-pipe",     name: "Mecha Oni",        note: "Mecha oni mask, bamboo pipe" },
+];
+
+function artCardHTML(a){
+  return `
+    <button class="nft-card" type="button" data-art="${a.file}" aria-label="View ${escapeHTML(a.name)} artwork larger">
+      <div class="nft-media">
+        <img src="images/${a.file}-thumb.jpg" alt="" loading="lazy" decoding="async" width="600" height="600">
+      </div>
+      <div class="nft-info">
+        <h3>${escapeHTML(a.name)}</h3>
+        <p>${escapeHTML(a.note)}</p>
+      </div>
+    </button>`;
+}
+
+function artCtaTileHTML(){
+  return `
+    <a class="nft-card nft-card-cta" href="${AXORONIN_CONFIG.MARKETPLACE_URL}" target="_blank" rel="noopener">
+      <span class="cta-glyph" aria-hidden="true">浪</span>
+      <strong>See every Ronin</strong>
+      <span>Browse the full collection on Exclusivo</span>
+      <span class="cta-arrow" aria-hidden="true">→</span>
+    </a>`;
+}
+
+
+/* ==========================================================================
+   CORE UI: theme, loader, nav, reveals, FAQ, tabs, lightbox, sakura
+   ========================================================================== */
 (function(){
   "use strict";
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const c = AXORONIN_CONFIG;
 
   /* ---------------- THEME ---------------- */
   const THEME_KEY = 'axoronin-theme';
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
   function applyTheme(theme){
     document.documentElement.setAttribute('data-theme', theme);
-    const icon = theme === 'light' ? '☀️' : '🌙';
-    document.querySelectorAll('#themeToggle, #mobileThemeIcon').forEach(el=>{
-      if(el.id === 'mobileThemeIcon') el.textContent = icon; else el.textContent = icon;
+    if(themeMeta) themeMeta.setAttribute('content', theme === 'light' ? '#f7f3fb' : '#08060c');
+    document.querySelectorAll('#themeToggle, #mobileThemeToggle').forEach(btn => {
+      btn.setAttribute('aria-pressed', String(theme === 'light'));
     });
-  }
-  function initTheme(){
-    const saved = localStorage.getItem(THEME_KEY);
-    if(saved){ applyTheme(saved); }
-    else{
-      const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-      applyTheme(prefersLight ? 'light' : 'dark');
-    }
   }
   function toggleTheme(){
-    const current = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = current === 'light' ? 'dark' : 'light';
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     applyTheme(next);
-    localStorage.setItem(THEME_KEY, next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){ /* storage unavailable */ }
   }
-  initTheme();
+  // The inline <head> script already set data-theme before first paint.
+  applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+  document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
+  document.getElementById('mobileThemeToggle')?.addEventListener('click', toggleTheme);
 
-  /* ---------------- LOADER ---------------- */
-  window.addEventListener('load', () => {
-    const loader = document.getElementById('loader');
-    if(!loader) return;
-    const delay = reducedMotion ? 200 : 900;
-    setTimeout(()=> loader.classList.add('hide'), delay);
+  /* ---------------- LOADER ----------------
+     Short, never blocking: hides shortly after load, with a hard cap so a
+     slow image or font can never keep visitors staring at a splash screen. */
+  const loader = document.getElementById('loader');
+  if(loader){
+    const hide = () => loader.classList.add('hide');
+    if(document.readyState === 'complete') setTimeout(hide, 150);
+    else window.addEventListener('load', () => setTimeout(hide, reducedMotion ? 0 : 250));
+    setTimeout(hide, 2500);
+  }
+
+  /* ---------------- NAVBAR ---------------- */
+  const navbar = document.getElementById('navbar');
+  const onScroll = () => navbar?.classList.toggle('scrolled', window.scrollY > 30);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive:true });
+
+  /* ---------------- MOBILE MENU ---------------- */
+  const hamburger = document.getElementById('hamburgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeBtn = document.getElementById('mobileMenuClose');
+
+  function openMenu(){
+    if(!mobileMenu) return;
+    mobileMenu.classList.add('open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('no-scroll');
+    hamburger?.setAttribute('aria-expanded', 'true');
+    setTimeout(() => closeBtn?.focus(), 50);
+  }
+  function closeMenu(restoreFocus){
+    if(!mobileMenu || !mobileMenu.classList.contains('open')) return;
+    mobileMenu.classList.remove('open');
+    mobileMenu.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('no-scroll');
+    hamburger?.setAttribute('aria-expanded', 'false');
+    if(restoreFocus) hamburger?.focus();
+  }
+  window.AXORONIN_closeMenu = closeMenu;
+  hamburger?.addEventListener('click', () => mobileMenu.classList.contains('open') ? closeMenu(true) : openMenu());
+  closeBtn?.addEventListener('click', () => closeMenu(true));
+  mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', () => closeMenu(false)));
+  // Keep keyboard focus inside the open menu.
+  mobileMenu?.addEventListener('keydown', e => {
+    if(e.key !== 'Tab') return;
+    const items = mobileMenu.querySelectorAll('a, button');
+    const first = items[0], last = items[items.length - 1];
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  });
+  window.matchMedia('(min-width: 901px)').addEventListener?.('change', e => { if(e.matches) closeMenu(false); });
+
+  /* Skip link: focus <main> without changing the hash (which drives routing). */
+  document.querySelector('.skip-link')?.addEventListener('click', e => {
+    e.preventDefault();
+    document.getElementById('main')?.focus();
   });
 
-  /* ---------------- NAV WIRING (nav is static markup, runs immediately) ---------------- */
-  function initNav(){
-    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
-
-    const navbar = document.getElementById('navbar');
-    const onScroll = () => {
-      if(!navbar) return;
-      navbar.classList.toggle('scrolled', window.scrollY > 30);
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive:true });
-
-    document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
-    document.getElementById('mobileThemeToggle')?.addEventListener('click', toggleTheme);
-
-    const hamburger = document.getElementById('hamburgerBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const closeBtn = document.getElementById('mobileMenuClose');
-
-    function openMenu(){
-      mobileMenu.classList.add('open');
-      document.body.classList.add('no-scroll');
-      hamburger.textContent = '✕';
-      hamburger.setAttribute('aria-expanded','true');
-    }
-    function closeMenu(){
-      mobileMenu.classList.remove('open');
-      document.body.classList.remove('no-scroll');
-      hamburger.textContent = '☰';
-      hamburger.setAttribute('aria-expanded','false');
-    }
-    hamburger?.addEventListener('click', () => {
-      mobileMenu.classList.contains('open') ? closeMenu() : openMenu();
-    });
-    closeBtn?.addEventListener('click', closeMenu);
-    mobileMenu?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
-    window.addEventListener('keydown', e => { if(e.key === 'Escape') closeMenu(); });
-  }
-  initNav();
-
-  /* ---------------- CUSTOM CURSOR (desktop only) ---------------- */
-  if(window.matchMedia('(hover:hover) and (pointer:fine)').matches){
-    const dot = document.createElement('div'); dot.className = 'cursor-dot';
-    const ring = document.createElement('div'); ring.className = 'cursor-ring';
-    document.body.append(dot, ring);
-    let rx=0, ry=0, mx=0, my=0;
-    window.addEventListener('mousemove', e => {
-      mx = e.clientX; my = e.clientY;
-      dot.style.left = mx+'px'; dot.style.top = my+'px';
-      const target = e.target.closest('a,button,.nft-card,.feature-card');
-      ring.classList.toggle('active', !!target);
-    });
-    (function loop(){
-      rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
-      ring.style.left = rx+'px'; ring.style.top = ry+'px';
-      requestAnimationFrame(loop);
-    })();
-  }
-
   /* ---------------- SCROLL REVEALS ---------------- */
-  const io = new IntersectionObserver((entries)=>{
-    entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  if('IntersectionObserver' in window && !reducedMotion){
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-  const phaseIo = new IntersectionObserver((entries)=>{
-    entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in-view'); } });
-  }, { threshold: 0.3 });
-  document.querySelectorAll('.phase').forEach(el => phaseIo.observe(el));
+    const phaseIo = new IntersectionObserver(entries => {
+      entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in-view'); phaseIo.unobserve(en.target); } });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('.phase').forEach(el => phaseIo.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+    document.querySelectorAll('.phase').forEach(el => el.classList.add('in-view'));
+  }
 
   /* ---------------- FAQ ACCORDION ---------------- */
   function bindFaq(){
@@ -214,8 +201,11 @@ function nftCardHTML(n){
       const a = item.querySelector('.faq-a');
       q?.addEventListener('click', () => {
         const isOpen = item.classList.contains('open');
-        document.querySelectorAll('.faq-item.open').forEach(other => {
-          if(other !== item){ other.classList.remove('open'); other.querySelector('.faq-a').style.maxHeight = null; }
+        item.parentElement.querySelectorAll('.faq-item.open').forEach(other => {
+          if(other === item) return;
+          other.classList.remove('open');
+          other.querySelector('.faq-a').style.maxHeight = null;
+          other.querySelector('.faq-q').setAttribute('aria-expanded', 'false');
         });
         item.classList.toggle('open', !isOpen);
         a.style.maxHeight = !isOpen ? a.scrollHeight + 'px' : null;
@@ -224,180 +214,277 @@ function nftCardHTML(n){
     });
   }
   window.AXORONIN_bindFaq = bindFaq;
-  bindFaq();
 
-  /* ---------------- TRAIT TABS (traits section) ---------------- */
+  /** Render a FAQ list into a container. Answers may contain trusted HTML. */
+  window.AXORONIN_renderFaq = function(container, items, prefix){
+    if(!container) return;
+    container.innerHTML = items.map(([q, a], i) => `
+      <div class="faq-item">
+        <h3 class="faq-h">
+          <button class="faq-q" type="button" aria-expanded="false" id="${prefix}-q${i}" aria-controls="${prefix}-a${i}">
+            <span>${q}</span><span class="plus" aria-hidden="true"></span>
+          </button>
+        </h3>
+        <div class="faq-a" id="${prefix}-a${i}" role="region" aria-labelledby="${prefix}-q${i}"><p>${a}</p></div>
+      </div>`).join('');
+    bindFaq();
+  };
+
+  /* ---------------- TRAIT TABS ---------------- */
   document.querySelectorAll('[data-trait-tabs]').forEach(wrap => {
-    const tabs = wrap.querySelectorAll('.trait-tab');
+    const tabs = Array.from(wrap.querySelectorAll('.trait-tab'));
     const panels = wrap.querySelectorAll('[data-trait-panel]');
-    tabs.forEach(tab => tab.addEventListener('click', () => {
-      tabs.forEach(t=>t.classList.remove('active'));
-      tab.classList.add('active');
-      const key = tab.dataset.tab;
-      panels.forEach(p => p.style.display = (p.dataset.traitPanel === key) ? 'grid' : 'none');
-    }));
+    function select(tab){
+      tabs.forEach(t => {
+        const on = t === tab;
+        t.classList.toggle('active', on);
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach(p => { p.hidden = p.dataset.traitPanel !== tab.dataset.tab; if(!p.hidden) p.classList.add('in'); });
+    }
+    tabs.forEach((tab, i) => {
+      tab.tabIndex = tab.classList.contains('active') ? 0 : -1;
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', e => {
+        const dir = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if(!dir) return;
+        e.preventDefault();
+        const next = tabs[(i + dir + tabs.length) % tabs.length];
+        select(next); next.focus();
+      });
+    });
   });
 
-  /* ---------------- SAKURA PARTICLES ---------------- */
-  function initSakura(canvasId, density){
+  /* ---------------- ARTWORK LIGHTBOX ---------------- */
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbCap = document.getElementById('lightboxCaption');
+  const lbClose = document.getElementById('lightboxClose');
+  let lbReturnFocus = null;
+
+  function openLightbox(file, trigger){
+    const art = AXORONIN_ART.find(a => a.file === file);
+    if(!art || !lightbox) return;
+    lbReturnFocus = trigger || null;
+    lbImg.src = `images/${art.file}-large.jpg`;
+    lbImg.alt = `${art.name}: ${art.note}`;
+    lbCap.innerHTML = `<strong>${escapeHTML(art.name)}</strong><span>${escapeHTML(art.note)}</span>`;
+    lightbox.hidden = false;
+    requestAnimationFrame(() => lightbox.classList.add('open'));
+    document.body.classList.add('no-scroll');
+    lbClose.focus();
+  }
+  function closeLightbox(){
+    if(!lightbox || lightbox.hidden) return;
+    lightbox.classList.remove('open');
+    document.body.classList.remove('no-scroll');
+    setTimeout(() => { lightbox.hidden = true; lbImg.removeAttribute('src'); }, reducedMotion ? 0 : 250);
+    lbReturnFocus?.focus();
+  }
+  document.addEventListener('click', e => {
+    const card = e.target.closest('[data-art]');
+    if(card) openLightbox(card.dataset.art, card);
+  });
+  lbClose?.addEventListener('click', closeLightbox);
+  lightbox?.addEventListener('click', e => { if(e.target === lightbox) closeLightbox(); });
+  lightbox?.addEventListener('keydown', e => { if(e.key === 'Tab'){ e.preventDefault(); lbClose.focus(); } });
+
+  window.addEventListener('keydown', e => {
+    if(e.key !== 'Escape') return;
+    if(lightbox && !lightbox.hidden) closeLightbox();
+    else closeMenu(true);
+  });
+
+  /* ---------------- CONFIG-DRIVEN TEXT ---------------- */
+  document.querySelectorAll('[data-config]').forEach(el => {
+    const v = c[el.dataset.config];
+    el.textContent = configText(v);
+    el.classList.toggle('is-tba', isPlaceholder(v));
+  });
+  const yearEl = document.getElementById('copyrightYear');
+  if(yearEl) yearEl.textContent = c.COPYRIGHT_YEAR;
+
+  /* ---------------- SAKURA PARTICLES ----------------
+     Only animates while the hero is actually on screen and the tab is
+     visible, so it costs nothing while reading the rest of the site. */
+  function initSakura(canvasId){
     const canvas = document.getElementById(canvasId);
     if(!canvas || reducedMotion) return;
     const ctx = canvas.getContext('2d');
-    let w, h, petals = [];
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let w = 0, h = 0, petals = [], running = false, onScreen = true, rafId = 0;
+
     function resize(){
-      w = canvas.width = canvas.offsetWidth * devicePixelRatio;
-      h = canvas.height = canvas.offsetHeight * devicePixelRatio;
+      w = canvas.width = Math.max(1, canvas.offsetWidth * dpr);
+      h = canvas.height = Math.max(1, canvas.offsetHeight * dpr);
     }
-    function makePetal(){
+    function makePetal(initial){
       return {
-        x: Math.random()*w, y: Math.random()*-h,
-        r: (Math.random()*4+3) * devicePixelRatio,
-        speed: (Math.random()*0.6+0.3) * devicePixelRatio,
-        drift: Math.random()*0.6-0.3,
-        sway: Math.random()*Math.PI*2,
-        rot: Math.random()*Math.PI,
-        rotSpeed: (Math.random()-0.5)*0.02,
-        opacity: Math.random()*0.5+0.3,
+        x: Math.random() * w, y: initial ? Math.random() * h : -20 * dpr,
+        r: (Math.random() * 4 + 3) * dpr,
+        speed: (Math.random() * 0.6 + 0.3) * dpr,
+        drift: Math.random() * 0.6 - 0.3,
+        sway: Math.random() * Math.PI * 2,
+        rot: Math.random() * Math.PI,
+        rotSpeed: (Math.random() - 0.5) * 0.02,
+        opacity: Math.random() * 0.45 + 0.25,
       };
     }
     resize();
-    const count = Math.round((w*h)/(900000/density));
-    for(let i=0;i<Math.max(10,Math.min(count,50));i++) petals.push(makePetal());
-    window.addEventListener('resize', resize);
+    const count = Math.max(12, Math.min(Math.round((w * h) / (900000 * dpr)), 40));
+    for(let i = 0; i < count; i++) petals.push(makePetal(true));
+    let resizeTimer;
+    window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 150); });
 
     function draw(){
-      ctx.clearRect(0,0,w,h);
-      petals.forEach(p => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.fillStyle = '#ffb3d1';
+      for(const p of petals){
         p.y += p.speed; p.sway += 0.01; p.rot += p.rotSpeed;
-        p.x += Math.sin(p.sway)*0.4 + p.drift*0.2;
-        if(p.y > h + 20){ Object.assign(p, makePetal(), { y: -20 }); }
+        p.x += Math.sin(p.sway) * 0.4 + p.drift * 0.2;
+        if(p.y > h + 20) Object.assign(p, makePetal(false));
         ctx.save();
         ctx.translate(p.x, p.y);
         ctx.rotate(p.rot);
         ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = '#ffb3d1';
         ctx.beginPath();
-        ctx.ellipse(0,0, p.r, p.r*0.6, 0, 0, Math.PI*2);
+        ctx.ellipse(0, 0, p.r, p.r * 0.6, 0, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
-      });
-      requestAnimationFrame(draw);
+      }
+      rafId = requestAnimationFrame(draw);
     }
-    draw();
+    function sync(){
+      const should = onScreen && !document.hidden && canvas.offsetParent !== null;
+      if(should && !running){ running = true; if(!w || !h) resize(); rafId = requestAnimationFrame(draw); }
+      else if(!should && running){ running = false; cancelAnimationFrame(rafId); }
+    }
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(([en]) => { onScreen = en.isIntersecting; sync(); }).observe(canvas);
+    }
+    document.addEventListener('visibilitychange', sync);
+    window.addEventListener('hashchange', () => setTimeout(sync, 0));
+    sync();
   }
-  initSakura('sakura-canvas', 1);
-
+  initSakura('sakura-canvas');
 })();
 
 
-/* ===== home-data.js (homepage NFT preview + FAQ) ===== */
+/* ==========================================================================
+   HOME: featured artwork + FAQ
+   ========================================================================== */
 (function(){
   const c = AXORONIN_CONFIG;
+  const link = (url, label) => `<a class="text-link" href="${url}" target="_blank" rel="noopener">${label}</a>`;
 
-  const gridEl = document.getElementById('home-nft-grid');
-  if(gridEl){
-    gridEl.innerHTML = AXORONIN_NFTS.slice(0, 8).map(nftCardHTML).join('');
-  }
+  const homeGrid = document.getElementById('home-nft-grid');
+  if(homeGrid) homeGrid.innerHTML = AXORONIN_ART.slice(0, 4).map(artCardHTML).join('');
+
+  const collectionGrid = document.getElementById('collection-nft-grid');
+  if(collectionGrid) collectionGrid.innerHTML = AXORONIN_ART.map(artCardHTML).join('') + artCtaTileHTML();
 
   const FAQ = [
     ["What is AxoRonin?", `AxoRonin is a community-driven NFT collection inspired by Japanese culture, cyberpunk aesthetics, and the unique charm of axolotls. It blends original art, storytelling and a growing community into one universe.`],
-    ["What is the Ronin Clan?", `The Ronin Clan is the AxoRonin community: the people who follow the lore, join Discord, shape decisions through voting, and help build the universe over time.`],
-    ["How many NFTs will there be?", `The total collection supply is ${c.COLLECTION_SUPPLY}. This figure will be confirmed officially before mint.`],
-    ["What blockchain is AxoRonin built on?", `AxoRonin will be built on ${c.BLOCKCHAIN}. Official confirmation will be shared through Discord and X before launch.`],
-    ["Where can I mint?", `Visit the official AxoRonin collection on Exclusivo: ${c.MINT_URL}.`],
-    ["Where can I buy AxoRonin?", `After mint, AxoRonin will be available on the secondary marketplace listed at ${c.MARKETPLACE_URL}.`],
-    ["What do holders receive?", `Holder benefits are expected to include community access, early announcements, voting opportunities, digital rewards and selected campaign perks. Specific benefits will be confirmed officially. See the Ronin Clan page for details.`],
+    ["What is the Ronin Clan?", `The Ronin Clan is the AxoRonin community: the people who follow the lore, join ${link(c.DISCORD_URL, "Discord")}, shape decisions through voting, and help build the universe over time.`],
+    ["How many NFTs will there be?", isPlaceholder(c.COLLECTION_SUPPLY)
+      ? `See the live supply on the official ${link(c.MINT_URL, "Exclusivo collection page")}. Official figures are also shared on Discord and X.`
+      : `The total collection supply is ${escapeHTML(c.COLLECTION_SUPPLY)}.`],
+    ["What blockchain is AxoRonin built on?", isPlaceholder(c.BLOCKCHAIN)
+      ? `Network details are listed on the official ${link(c.MINT_URL, "Exclusivo collection page")}.`
+      : `AxoRonin is built on ${escapeHTML(c.BLOCKCHAIN)}.`],
+    ["Where can I mint or buy AxoRonin?", `On the official AxoRonin collection page on ${link(c.MINT_URL, "Exclusivo")}. Always double-check you are on exclusivo.one and only trust links shared from our official Discord and X.`],
+    ["What do holders receive?", `Holder benefits are expected to include community access, early announcements, voting opportunities, digital rewards and selected campaign perks. Specific benefits will be confirmed officially. See the <a class="text-link" href="#clan">Ronin Clan page</a> for details.`],
     ["Will there be physical collectibles?", `Selected campaigns and milestones may feature limited physical AxoRonin collectibles, including 3D-printed pieces. These are not guaranteed for every holder or every drop.`],
-    ["Is there a roadmap?", `Yes. The Ronin Journey roadmap outlines five phases from The Awakening through Legacy. See the Roadmap page for the full timeline.`],
+    ["Is there a roadmap?", `Yes. The Ronin Journey outlines five phases from The Awakening through Legacy. See the <a class="text-link" href="#roadmap">Roadmap page</a> for the full timeline.`],
     ["Can the roadmap change?", `Yes. Roadmap milestones represent the current direction of AxoRonin and may evolve based on development, community feedback and project conditions.`],
   ];
-
-  const faqList = document.getElementById('home-faqList');
-  if(faqList){
-    faqList.innerHTML = FAQ.map(([q,a], i) => `
-      <div class="faq-item">
-        <button class="faq-q" aria-expanded="false" id="faqq-${i}">
-          <span>${q}</span><span class="plus">+</span>
-        </button>
-        <div class="faq-a"><p>${a}</p></div>
-      </div>
-    `).join('');
-    window.AXORONIN_bindFaq && window.AXORONIN_bindFaq();
-  }
+  window.AXORONIN_renderFaq(document.getElementById('home-faqList'), FAQ, 'faq');
 })();
 
 
-/* ===== mint.js (mint page data + FAQ) ===== */
+/* ==========================================================================
+   CLAN: stats (each card only appears once its figure is official)
+   ========================================================================== */
+(function(){
+  const c = AXORONIN_CONFIG;
+  const section = document.getElementById('clan-stats');
+  if(!section) return;
+  let shown = 0;
+  section.querySelectorAll('[data-stat]').forEach(card => {
+    const v = c[card.dataset.stat];
+    if(isPlaceholder(v)){ card.hidden = true; return; }
+    card.querySelector('.val').textContent = v;
+    shown++;
+  });
+  if(shown === 0) section.hidden = true;
+  else section.querySelector('.stat-grid').style.setProperty('--stat-cols', String(Math.min(shown, 4)));
+})();
+
+
+/* ==========================================================================
+   MINT: data + FAQ
+   ========================================================================== */
 (function(){
   const c = AXORONIN_CONFIG;
 
-  document.getElementById('mintPrice').textContent = c.MINT_PRICE;
-  document.getElementById('mintSupply').textContent = c.COLLECTION_SUPPLY;
-  document.getElementById('mintNetwork').textContent = c.BLOCKCHAIN;
-  document.getElementById('contractAddr').textContent = c.CONTRACT_ADDRESS;
+  /* Collection facts: rows with a real value are shown; placeholder rows are
+     hidden (Exclusivo shows the live figures). The note only appears when
+     at least one row is still missing. */
+  let missing = 0;
+  document.querySelectorAll('[data-mint-row]').forEach(row => {
+    const v = c[row.dataset.mintRow];
+    if(isPlaceholder(v)){ row.hidden = true; missing++; return; }
+    row.lastElementChild.textContent = v;
+  });
+  const note = document.getElementById('mintNote');
+  if(note) note.hidden = missing === 0;
 
-  document.getElementById('copyContract').addEventListener('click', () => {
-    if(c.CONTRACT_ADDRESS.startsWith('[')) return;
-    navigator.clipboard?.writeText(c.CONTRACT_ADDRESS);
+  /* Contract address: only shown once it is official. */
+  const contractBox = document.getElementById('contractBox');
+  const contractAddr = document.getElementById('contractAddr');
+  if(contractBox && contractAddr){
+    if(isPlaceholder(c.CONTRACT_ADDRESS)) contractBox.hidden = true;
+    else contractAddr.textContent = c.CONTRACT_ADDRESS;
+  }
+  const copyBtn = document.getElementById('copyContract');
+  copyBtn?.addEventListener('click', async () => {
+    try{
+      await navigator.clipboard.writeText(c.CONTRACT_ADDRESS);
+      copyBtn.textContent = 'Copied';
+    }catch(e){ copyBtn.textContent = 'Copy failed'; }
+    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
   });
 
-  /* ---------------------------------------------------------------
-     Quantity selector — wired up but intentionally inert until
-     MINT_LIVE is true, so there is no fake mint interaction.
-     --------------------------------------------------------------- */
-  let qty = 1;
-  const qtyVal = document.getElementById('qtyVal');
-  const qtyMinus = document.getElementById('qtyMinus');
-  const qtyPlus = document.getElementById('qtyPlus');
-  const MAX_QTY = 10;
-
-  function renderQty(){
-    qtyVal.textContent = qty;
-    qtyMinus.disabled = !c.MINT_LIVE || qty <= 1;
-    qtyPlus.disabled = !c.MINT_LIVE || qty >= MAX_QTY;
+  /* Mint call-to-action + status, driven by MINT_LIVE. */
+  const cta = document.getElementById('mintCta');
+  const status = document.getElementById('mintStatus');
+  const statusText = document.getElementById('mintStatusText');
+  if(cta){
+    cta.href = c.MINT_URL;
+    if(!c.MINT_LIVE){
+      cta.textContent = 'Mint Coming Soon';
+      cta.classList.add('is-disabled');
+      cta.setAttribute('aria-disabled', 'true');
+      cta.removeAttribute('href');
+    }
   }
-  qtyMinus.addEventListener('click', () => { if(qty>1){ qty--; renderQty(); } });
-  qtyPlus.addEventListener('click', () => { if(qty<MAX_QTY){ qty++; renderQty(); } });
-  renderQty();
-
-  /* ---------------------------------------------------------------
-     Wallet connection stub. Intentionally does NOT connect to any
-     real wallet or request permissions. Replace connectWallet() with
-     real logic (e.g. wagmi/ethers/viem) once mint is ready, and flip
-     AXORONIN_CONFIG.MINT_LIVE to true.
-     --------------------------------------------------------------- */
-  const connectBtn = document.getElementById('connectBtn');
-  async function connectWallet(){
-    // TODO: integrate real wallet connection (never request unnecessary
-    // permissions, never handle private keys client-side beyond what a
-    // standard wallet provider like MetaMask/WalletConnect exposes).
-    console.log('Wallet connection not yet configured.');
-  }
-  if(c.MINT_LIVE){
-    connectBtn.disabled = false;
-    connectBtn.textContent = 'Connect Wallet';
-    connectBtn.addEventListener('click', connectWallet);
-  } else {
-    connectBtn.disabled = true;
-    connectBtn.textContent = 'Mint Coming Soon';
+  if(status && statusText){
+    status.classList.toggle('is-live', !!c.MINT_LIVE);
+    statusText.textContent = c.MINT_LIVE
+      ? 'Minting is live. Only mint through exclusivo.one or links shared on our official Discord and X.'
+      : 'Minting is not yet live. Follow Discord and X for the official mint announcement.';
   }
 
-  /* ---------------------------------------------------------------
-     Mint FAQ
-     --------------------------------------------------------------- */
   const MINT_FAQ = [
-    ["Where can I mint?", `Tap "Mint" anywhere on the site. It takes you straight to the official AxoRonin collection on Exclusivo (${c.MINT_URL}).`],
-    ["What do I need to mint?", `A compatible wallet for ${c.BLOCKCHAIN} and enough funds to cover the mint price (${c.MINT_PRICE}) plus network gas fees. Full instructions will be shared before mint.`],
-    ["Is there a limit per wallet?", `Any per-wallet or per-transaction limits will be confirmed officially before the mint goes live.`],
-    ["What happens after I mint?", `Minted AxoRonin will appear in your connected wallet and become visible on the marketplace listed at ${c.MARKETPLACE_URL}.`],
+    ["Where can I mint?", `Tap "Mint" anywhere on the site. It takes you straight to the official AxoRonin collection on <a class="text-link" href="${c.MINT_URL}" target="_blank" rel="noopener">Exclusivo</a>, where minting is live.`],
+    ["What do I need to mint?", isPlaceholder(c.BLOCKCHAIN)
+      ? `A compatible crypto wallet and enough funds to cover the mint price plus network fees. Exclusivo shows the supported network and wallets on the mint page.`
+      : `A compatible wallet for ${escapeHTML(c.BLOCKCHAIN)} and enough funds to cover the mint price${isPlaceholder(c.MINT_PRICE) ? '' : ` (${escapeHTML(c.MINT_PRICE)})`} plus network fees.`],
+    ["Is there a limit per wallet?", `Any per-wallet or per-transaction limits are shown on the Exclusivo mint page before you confirm.`],
+    ["What happens after I mint?", `Your AxoRonin will appear in your wallet and on the official Exclusivo collection page. Then come say hi in the Ronin Clan on <a class="text-link" href="${c.DISCORD_URL}" target="_blank" rel="noopener">Discord</a>.`],
   ];
-  const list = document.getElementById('mintFaqList');
-  list.innerHTML = MINT_FAQ.map(([q,a],i) => `
-    <div class="faq-item">
-      <button class="faq-q" aria-expanded="false"><span>${q}</span><span class="plus">+</span></button>
-      <div class="faq-a"><p>${a}</p></div>
-    </div>`).join('');
-  window.AXORONIN_bindFaq && window.AXORONIN_bindFaq();
+  window.AXORONIN_renderFaq(document.getElementById('mintFaqList'), MINT_FAQ, 'mintfaq');
 })();
 
 
@@ -637,30 +724,31 @@ function nftCardHTML(n){
 
 
 /* ==========================================================================
-   ROUTER — single-file navigation between AxoRonin's sections
+   ROUTER: single-file navigation between AxoRonin's sections
    Hash format:  #route            e.g. #collection
                  #route:anchorId   e.g. #home:home-faq, #whitepaper:wp-vision
    ========================================================================== */
 (function(){
   "use strict";
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const TITLES = {
+    home: 'AxoRonin: Honor the Code. Embrace the Chaos.',
+    lore: 'The Legend of the Ronin · AxoRonin',
+    shinkai: 'The Lore of Shinkai · AxoRonin',
+    collection: 'Collection · AxoRonin',
+    roadmap: 'Roadmap · AxoRonin',
+    clan: 'Join the Ronin Clan · AxoRonin',
+    whitepaper: 'Whitepaper · AxoRonin',
+    mint: 'Mint · AxoRonin',
+  };
 
   function parseHash(){
-    const raw = (location.hash || '#home').slice(1);
+    const raw = decodeURIComponent((location.hash || '#home').slice(1));
     const [route, anchor] = raw.split(':');
     return { route: route || 'home', anchor: anchor || null };
   }
 
-  function closeMobileMenu(){
-    const menu = document.getElementById('mobileMenu');
-    const hamburger = document.getElementById('hamburgerBtn');
-    if(!menu || !menu.classList.contains('open')) return;
-    menu.classList.remove('open');
-    document.body.classList.remove('no-scroll');
-    if(hamburger){ hamburger.textContent = '☰'; hamburger.setAttribute('aria-expanded','false'); }
-  }
-
-  function showRoute(route, anchor){
+  function showRoute(route, anchor, isInitial){
     const panels = document.querySelectorAll('.route-panel');
     let matched = false;
     panels.forEach(p => {
@@ -669,16 +757,14 @@ function nftCardHTML(n){
       if(isMatch) matched = true;
     });
     if(!matched){
-      // Unknown route in the URL — fall back to home instead of a blank page.
+      // Unknown route (or a plain in-page anchor): fall back to home.
       document.querySelector('.route-panel[data-route="home"]')?.classList.add('active');
+      if(!anchor && document.getElementById(route)) anchor = route;
       route = 'home';
     }
 
-    // Every other route panel starts at display:none, so its .reveal elements
-    // (opacity:0 until scrolled into view) never get a first IntersectionObserver
-    // check — they'd stay invisible forever. Home is exempt: it's active by
-    // default from page load, so its normal scroll-triggered reveal already
-    // works and shouldn't be shortcut here.
+    // Non-home panels start at display:none, so reveal their content right
+    // away instead of waiting on scroll observers that may never fire.
     if(route !== 'home'){
       const panel = document.querySelector(`.route-panel[data-route="${route}"]`);
       panel?.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
@@ -687,33 +773,33 @@ function nftCardHTML(n){
 
     const currentHash = anchor ? `${route}:${anchor}` : route;
     document.querySelectorAll('.nav-links a, .mobile-links a, .footer-links a').forEach(a => {
-      const linkHash = a.getAttribute('href').replace('#','');
-      a.classList.toggle('active', linkHash === currentHash || (linkHash === route && !anchor));
+      const linkHash = (a.getAttribute('href') || '').replace('#', '');
+      const active = linkHash === currentHash;
+      a.classList.toggle('active', active);
+      if(active) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
 
-    closeMobileMenu();
+    window.AXORONIN_closeMenu?.(false);
 
     if(anchor){
       requestAnimationFrame(() => {
-        const target = document.getElementById(anchor);
-        target?.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+        document.getElementById(anchor)?.scrollIntoView({ behavior: reducedMotion || isInitial ? 'auto' : 'smooth', block: 'start' });
       });
     } else {
       window.scrollTo({ top: 0, behavior: 'auto' });
+      // Move focus to the new page for keyboard / screen-reader users.
+      if(!isInitial) document.getElementById('main')?.focus({ preventScroll: true });
     }
 
-    document.title = route === 'home'
-      ? 'AxoRonin: Honor the Code. Embrace the Chaos.'
-      : `${route.charAt(0).toUpperCase()}${route.slice(1)}: AxoRonin`;
+    document.title = TITLES[route] || TITLES.home;
   }
 
   window.addEventListener('hashchange', () => {
     const { route, anchor } = parseHash();
-    showRoute(route, anchor);
+    showRoute(route, anchor, false);
   });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const { route, anchor } = parseHash();
-    showRoute(route, anchor);
-  });
+  const start = () => { const { route, anchor } = parseHash(); showRoute(route, anchor, true); };
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+  else start();
 })();
